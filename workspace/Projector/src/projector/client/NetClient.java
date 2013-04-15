@@ -15,7 +15,9 @@ import projector.main.MainActivity;
 
 import android.app.Activity;
 import android.content.Context;
+import android.media.MediaPlayer;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.util.Log;
 
 public class NetClient extends AsyncTask<MainActivity, MainActivity, MainActivity>{
@@ -91,13 +93,11 @@ public class NetClient extends AsyncTask<MainActivity, MainActivity, MainActivit
     	String commandString = new String(inString.substring(0, 1));
     	command = Integer.parseInt(commandString);
     	
-    	if (command != MainActivity.STOP){
-    		activity.stage = command;
-    	}
-    		
-    	//stop this projector (should exit thread and close socket)
-    	else { 
-    		if (connected) {
+
+    	
+    	
+    	if (command == MainActivity.STOP){
+       		if (connected) {
     			Log.i(TAG, "Socket is closing...");
     			try {
 					socket.close();
@@ -110,6 +110,18 @@ public class NetClient extends AsyncTask<MainActivity, MainActivity, MainActivit
     		else {
     			Log.e(TAG, "Socket was already closed!");
     		}
+    	}
+    	//stop this projector (should exit thread and close socket)
+    	else { 
+    		if(command == MainActivity.SUNRISE){
+    			activity.playSound("rooster.mp3");
+    			activity.view.renderer.lightStage = 0;
+    			}
+    		else if(command == MainActivity.STORM){
+    			activity.view.renderer.lightStage = 2;
+    		}
+    		else
+    			activity.stage = command;
     	}
     		
     }

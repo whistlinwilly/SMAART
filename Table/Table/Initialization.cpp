@@ -62,7 +62,7 @@ void Initialization::readInitPattern(int projNum, BackgroundSubtractorMOG2* BGsu
 	Mat twoCircles;
 	
 
-	sn->sendToAll("1",5,projNum);
+ 	sn->sendToAll("1",5,projNum);
 	sn->receiveData(projNum,recvbuf);
 
 	waitKey(100);

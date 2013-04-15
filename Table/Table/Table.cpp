@@ -9,7 +9,7 @@ Table::Table(char* ip, int port, int camNum){
 	sn = new ServerNetwork(ip, port);
 	tCam.initFastCam(camNum);
 	recvbuf = (char*)malloc(MAX_REC_BUF*sizeof(char));
-	tableBGsub = new BackgroundSubtractorMOG2(0, 400, true);
+	tableBGsub = new BackgroundSubtractorMOG2(0, 350, true);
 	projectorsConnected = 0;
 }
 
@@ -41,6 +41,24 @@ void Table::initialize(){
 	sn->receiveData(0, recvbuf);
 	sn->sendToAll("4",5,1);
 	sn->receiveData(1,recvbuf);
+
+	sn->sendToAll("6",5,0);
+	sn->receiveData(0, recvbuf);
+	sn->sendToAll("6",5,1);
+	sn->receiveData(1,recvbuf);
+
+	sn->sendToAll("7",5,0);
+	sn->receiveData(0, recvbuf);
+	sn->sendToAll("7",5,1);
+	sn->receiveData(1,recvbuf);
+
+	sn->sendToAll("5",5,0);
+	sn->receiveData(0, recvbuf);
+	sn->sendToAll("5",5,1);
+	sn->receiveData(1,recvbuf);
+
+
+
 }
 
 void Table::run(){

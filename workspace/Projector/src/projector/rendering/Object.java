@@ -12,7 +12,9 @@ public class Object {
 	
 	int uid;
 	int classifiedType;
-	float x, y, theta;
+	public float x;
+	public float y;
+	public float theta;
 	Surface[] surfaces;
 	FloatBuffer vertices, normals;
 	ByteBuffer indexBuffer;
@@ -20,12 +22,28 @@ public class Object {
 	FloatBuffer textures;
 	boolean draw = false;
 	int texNum;
-	int aniNum;
-	int aniTimesToPlay;
-	float aniDuration;
+	Animation a;
+	int aTimesToPlay;
+	float aDuration;
+	float aPoint;
+	float aFrameLength;
+	
+	int taTimesToPlay;
+	float taDuration;
+	float taPoint;
+	int[] taTextures;
+	float[] taLengths;
+	int taIndex;
+	public float z;
 
 	public Object(int uid) {
 		this.uid = uid;
+		aTimesToPlay = 0;
+		taTimesToPlay = 0;
+		taIndex = 0;
+		x = 0.0f;
+		y = 0.0f;
+		z = 0.0f;
 	      // Setup index-array buffer. Indices in byte.
 
 	}
@@ -48,12 +66,22 @@ public class Object {
 	
 	public void draw(GL10 gl) { 
 		
-		
+		if(aTimesToPlay > 0){
+			
+		  float s = aPoint / aFrameLength;
+			
+	      gl.glTranslatef(a.valueAtTime(s, AnimationFactory.X_LOC),a.valueAtTime(s, AnimationFactory.Y_LOC), 0.0f);
+	      gl.glRotatef(a.valueAtTime(s, AnimationFactory.X_ROT),1.0f,0.0f,0.0f);
+	      gl.glRotatef(a.valueAtTime(s, AnimationFactory.Y_ROT),0.0f,1.0f,0.0f);
+	      gl.glRotatef(a.valueAtTime(s, AnimationFactory.Z_ROT),0.0f,0.0f,1.0f);
+
+		}
 
 		
 		// Point to our buffers
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+		gl.glEnableClientState(GL10.GL_NORMAL_ARRAY);
 		
 		// Set the face rotation
 	//	gl.glFrontFace(GL10.GL_CW);
@@ -69,12 +97,14 @@ public class Object {
 	  		// Point to our buffers
 	  		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, surfaces[i].vertices);
 	  		gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, surfaces[i].textures);
+	  		gl.glNormalPointer(GL10.GL_FLOAT, 0, surfaces[i].normals);
 	    	  
 	    	  gl.glDrawElements(GL10.GL_TRIANGLES, 3, GL10.GL_UNSIGNED_BYTE, surfaces[i].index);
 	      
 	      }
 	      gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
 	     gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+	     gl.glDisableClientState(GL10.GL_NORMAL_ARRAY);
 
 	      
 	     // byte[] indices = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17};
@@ -106,6 +136,29 @@ public class Object {
 	
 	public void setTexture(int x){
 		texNum = x;
+	}
+
+	public void updateAnimationValues(long elapsedTime) {
+		
+		if(aTimesToPlay > 0){
+			aPoint += elapsedTime / 1000.0f;
+			if(aPoint > aDuration){
+				aPoint = aPoint % aDuration;
+				aTimesToPlay--;
+			}
+		}
+		
+		if(taTimesToPlay > 0){
+			taPoint += elapsedTime / 1000.0f;
+			if(taPoint > taLengths[taIndex]){
+				taPoint = taPoint - taLengths[taIndex++];
+				if(taIndex >= taLengths.length){
+					taIndex = 0;
+					taTimesToPlay--;
+				}
+			}
+			texNum = taTextures[taIndex];
+		}
 	}
 
 }

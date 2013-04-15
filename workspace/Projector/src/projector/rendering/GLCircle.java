@@ -110,6 +110,8 @@ class GLCircle {
 
 
 public void draw(GL10 gl) { 
+	
+	gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
       gl.glVertexPointer(3, GL10.GL_FIXED, 0, mVertexBuffer);
       
       
@@ -120,6 +122,8 @@ public void draw(GL10 gl) {
       gl.glColor4f(0, 0, 1, 1);
       gl.glNormal3f(0, 0, 1);
       gl.glDrawArrays(GL10.GL_TRIANGLE_FAN, 0, numPoints);
+      
+      gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
       /*gl.glNormal3f(0, 0, -1);
       gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 4, 4);
 

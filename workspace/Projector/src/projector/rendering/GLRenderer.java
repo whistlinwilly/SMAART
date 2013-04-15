@@ -39,6 +39,8 @@ public class GLRenderer implements GLSurfaceView.Renderer {
    private final GLCircle bigCircle = new GLCircle(0,0,2,100);
    private final GLCircle smallCircle = new GLCircle(0,3,0.5f,100);
    
+   boolean stoopidBoolean = false;
+   
  //North / West
    private final GLCircle circ00 = new GLCircle(0,0,0.5f,100);
    private final GLCircle circn20 = new GLCircle(-2,0,0.5f,100);
@@ -73,12 +75,11 @@ public class GLRenderer implements GLSurfaceView.Renderer {
    private final GLCircle circn4n4 = new GLCircle(-4,-4,0.5f,100);
    
    private long startTime;
-   private long fpsStartTime;
-   private long numFrames;
+   private long elapsedTime;
    
    private int numObjects = 0;
    
-   private ArrayList<Object> objects = new ArrayList<Object>();
+   public ArrayList<Object> objects = new ArrayList<Object>();
    private ArrayList<Animation> animations = new ArrayList<Animation>();
 
    public float xAngle = 0.0f;
@@ -97,14 +98,23 @@ public class GLRenderer implements GLSurfaceView.Renderer {
    private float height = 0.0f;
    public float eyeX = 0.0f;
    public float eyeY = 0.0f;
-   public float eyeZ = 20.0f;
+   public float eyeZ = 24.0f;
    public float centerX = 0.0f;
    public float centerY = 0.0f;
-   public float centerZ = -1.0f;
+   public float centerZ = 0.0f;
    public float upX  = 0.0f;
    public float upY = 1.0f;
    public float upZ  = 0.0f;
    public NetClient netClient;
+   
+   public float lightX = 0.0f;
+   public float lightY = 0.0f;
+   public float lightZ = -20.0f;
+   public float lightBrightness = 0.0f;
+   public float lightTheta = 0.0f;
+   public volatile int lightStage = -1;
+   
+   float theta = 0.0f;
    
    float animationPoint = 0.0f;
    float animationDuration = 4.0f;
@@ -133,10 +143,10 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 		
 		if (mainActivity.stage == MainActivity.RENDER_MAPPED){
 			receiveValsString = netClient.inString.split(",");
-			Log.i(TAG, "Vals Received: " + receiveValsString[0] + "," + receiveValsString[1]  + "," + receiveValsString[2]  + "," + receiveValsString[3]  + "," + receiveValsString[4]  + "," + receiveValsString[5]);
+		//	Log.i(TAG, "Vals Received: " + receiveValsString[0] + "," + receiveValsString[1]  + "," + receiveValsString[2]  + "," + receiveValsString[3]  + "," + receiveValsString[4]  + "," + receiveValsString[5]);
 			for (int i=0; i < 10; i++) {
 				receiveVals[i] = Float.parseFloat(receiveValsString[i]);
-				Log.i(TAG, "FLOAT VALUE[" + i + "]: " + receiveVals[i]);
+			//	Log.i(TAG, "FLOAT VALUE[" + i + "]: " + receiveVals[i]);
 			}
 		}
 		
@@ -153,20 +163,19 @@ public class GLRenderer implements GLSurfaceView.Renderer {
       this.gl = gl;
       
       startTime = System.currentTimeMillis();
-      fpsStartTime = startTime;
-      numFrames = 0;
       
 
-      
+
       // Define the lighting
       float lightAmbient[] = new float[] { 1.0f, 1.0f, 1.0f, 1 };
       float lightDiffuse[] = new float[] { 1, 1, 1, 1 };
-      float[] lightPos = new float[] { 0, 2, 3, 1 };
+      float[] lightPos = new float[] { 5, 3, 10, 1 };
       gl.glEnable(GL10.GL_LIGHTING);
       gl.glEnable(GL10.GL_LIGHT0);
       gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_AMBIENT, lightAmbient, 0);
       gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_DIFFUSE, lightDiffuse, 0);
       gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_POSITION, lightPos, 0);
+
       
 
       
@@ -183,7 +192,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
       // Set up any OpenGL options we need
       gl.glEnable(GL10.GL_DEPTH_TEST); 
       gl.glDepthFunc(GL10.GL_LEQUAL);
-      gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+    //  gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 
       // Optional: disable dither to boost performance
       // gl.glEnable(GL10.GL_DITHER);
@@ -205,7 +214,6 @@ public class GLRenderer implements GLSurfaceView.Renderer {
       
       // Enable textures
  //     gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
-      gl.glEnable(GL10.GL_TEXTURE_2D);
   //    loadTexture(gl, "Site.bmp");
   //    gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
       // Load the cube's texture from a bitmap
@@ -238,17 +246,27 @@ public class GLRenderer implements GLSurfaceView.Renderer {
    
    
    public void onDrawFrame(GL10 gl) {
+	   
+
+	      
       
       gl.glMatrixMode(GL10.GL_PROJECTION);
       gl.glLoadIdentity();
       float ratio = (float) width / height;
       
+      elapsedTime = System.currentTimeMillis() - startTime;
+      startTime = System.currentTimeMillis();
+      
+
+      
       
       if(mainActivity.stage == MainActivity.IDLE || mainActivity.stage == MainActivity.RENDER_CIRCLES){
-		   
-		   gl.glDisable(GL10.GL_TEXTURE_2D);
+
 		  // GLU.gluOrtho2D(gl, 0, width, 0, height);
 		   //used to be 17.5
+    	  
+    	//  gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+    	  
 		   GLU.gluPerspective(gl, 17.0f, ratio, 0.1f, 1000f); 
 		   GLU.gluLookAt(gl, eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ);
 		      // Clear the screen to black
@@ -260,8 +278,9 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 		      if (mainActivity.stage == MainActivity.RENDER_CIRCLES){
 		    	  bigCircle.draw(gl);
 				  smallCircle.draw(gl);
-				  mainActivity.stage = 4;
 		      }
+		      
+		   //   gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
 	   }
 	   else if(mainActivity.stage == MainActivity.RENDER_MAPPED || mainActivity.stage == MainActivity.FINAL_RENDERING){
 		   if (mainActivity.stage == MainActivity.RENDER_MAPPED) setValues(parseData());
@@ -321,9 +340,69 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 	   
 	   }
 	   else if (mainActivity.stage == MainActivity.RUN){
-		   gl.glEnable(GL10.GL_TEXTURE_2D);
+		   
+		      // Define the lighting
+		      float lightAmbient[] = new float[] { 0.1f, 0.1f, 0.1f, 1 };
+		      float lightDiffuse[] = new float[] { lightBrightness, lightBrightness, lightBrightness, 1 };
+		      float[] lightPos = new float[] { lightX, lightY, lightZ, 1 };
+		      gl.glEnable(GL10.GL_LIGHTING);
+		      gl.glEnable(GL10.GL_LIGHT0);
+		      gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_AMBIENT, lightAmbient, 0);
+		      gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_DIFFUSE, lightDiffuse, 0);
+		      gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_POSITION, lightPos, 0);
+		   
+		      if(lightStage == 0){
+		    	  lightY = (float) (-20 * Math.cos(lightTheta) - 10.0f);
+		    	  lightZ = (float) (30 * Math.sin(lightTheta));
+		    	  
+		    	  lightTheta += 0.005f;
+		    	  lightBrightness += 0.005f;
+		    	  
+		    	  if(lightTheta > 1.0f){
+		    		  lightStage = 1;
+		    		  mainActivity.playSound("birds.mp3");
+		    		  show(2);
+		    		  playAnimation(2, 1, 20, 20.0f);
+		    		  show(3);
+		    		  playAnimation(3, 1, 20, 18.0f);
+		    		  show(4);
+		    		  playAnimation(4, 1, 20, 22.0f);
+		    	  }
+		      }
+		      
+		      if(lightStage == 3){
+	    		  int textures[] = {2, 3, 2, 4, 2, 5};
+	    		float textureLengths[] = {0.2f, 0.2f, 0.2f, 0.2f, 0.2f};
+	    		  mainActivity.playSound("rain.mp3");
+	    		  playTextureAnimation(1, textures, textureLengths, 60, 1.0f);
+	    		  lightStage = 4;
+		      }
+		      
+		      if(lightStage == 2){
+		    	  lightBrightness -= 0.005f;
+		    	  
+		    	  if(lightBrightness < 0.6f && !stoopidBoolean){
+		    			int textures[] = {1, 0, 1, 0, 1};
+		    			float textureLengths[] = {0.2f, 0.1f, 0.2f, 0.1f, 0.4f};
+		    			hide(2);
+		    			hide(3);
+		    			hide(4);
+		    			mainActivity.playSound("thunder.mp3");
+		    			playTextureAnimation(0, textures, textureLengths, 2, 1.0f);
+		    			stoopidBoolean = true;
+		    	  }
+		    	  
+		    	  if(lightBrightness < 0.15f ){
+
+		    		  lightStage = 3;
+
+		    	  }
+		      }
+		      
+
+		      
 		   GLU.gluPerspective(gl, 17.0f, ratio, 0.1f, 1000f); 	      
-		   GLU.gluLookAt(gl, 10.0f, -10.0f, 12.0f, -2.0f, 2.0f, 0.0f, 0.0f, 0.0f, 1.0f);
+		   GLU.gluLookAt(gl, eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ);
 
 		   // Clear the screen to black
 		   gl.glClear(GL10.GL_COLOR_BUFFER_BIT
@@ -332,11 +411,31 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 		   // Position model so we can see it
 		   gl.glMatrixMode(GL10.GL_MODELVIEW);
 		   gl.glLoadIdentity();
+		   
+		      float matAmbient[] = new float[] { 1, 1, 1, 1 };
+		      float matDiffuse[] = new float[] { 1, 1, 1, 1 };
+		      gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_AMBIENT,
+		            matAmbient, 0);
+		      gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_DIFFUSE,
+		            matDiffuse, 0);
       
+
+		      
 		   for(Object curObject: objects){
+			   curObject.updateAnimationValues(elapsedTime);
 			   if(curObject.draw){
+				   gl.glActiveTexture(GL10.GL_TEXTURE0 + curObject.texNum);
+				   gl.glClientActiveTexture(GL10.GL_TEXTURE0 + curObject.texNum);
+				   gl.glEnable(GL10.GL_TEXTURE_2D);
 				   gl.glBindTexture(GL10.GL_TEXTURE_2D, textures[curObject.texNum]);
+				   gl.glPushMatrix();
+				   
+				      gl.glTranslatef(curObject.x,curObject.y, curObject.z);
+				      gl.glRotatef(curObject.theta,0.0f,0.0f,1.0f);
+				      
 				   curObject.draw(gl);
+				   gl.glPopMatrix();
+				   gl.glDisable(GL10.GL_TEXTURE_2D);
 			   }
 		   }
 	   }
@@ -359,9 +458,20 @@ public class GLRenderer implements GLSurfaceView.Renderer {
    }
    
    public int loadTexture(String fileName){
+	   
+	   
+	   
+	   
 	   Bitmap bitmap = BitmapFactory.decodeFile(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Textures/" + fileName);
 	   
+	   gl.glActiveTexture(GL10.GL_TEXTURE0 + numTextures);
+	   gl.glClientActiveTexture(GL10.GL_TEXTURE0 + numTextures);
+	   
+	   gl.glEnable(GL10.GL_TEXTURE_2D);
+	   
 	   gl.glGenTextures(1, textures, numTextures);
+	   
+	   
 	   
 			// ...and bind it to our array
 		gl.glBindTexture(GL10.GL_TEXTURE_2D, textures[numTextures]);
@@ -380,6 +490,8 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 			
 			// Clean up
 		bitmap.recycle();
+		
+		gl.glDisable(GL10.GL_TEXTURE_2D);
 		
 		return numTextures++;
    }
@@ -441,13 +553,33 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 	   }
    }
    
-   public void playAnimation(int objNum, int aniNum, int times, int duration){
+
+   
+   public void playAnimation(int objNum, int aniNum, int times, float duration){
+	   Object obj;
+	   if(objNum < numObjects){
+		   if(aniNum < numAnimations){
+			   obj = objects.get(objNum);
+			   obj.a = animations.get(aniNum);
+			   obj.aDuration = duration;
+			   obj.aTimesToPlay = times;
+			   obj.aPoint = 0.0f;
+			   obj.aFrameLength = duration / (animations.get(aniNum).frames - 1);
+		   }
+	   }
+   }
+   
+   public void playTextureAnimation(int objNum, int[] textures, float[] textureLengths, int times, float duration){
 	   Object obj;
 	   if(objNum < numObjects){
 		   obj = objects.get(objNum);
-		   obj.aniNum = aniNum;
-		   obj.aniTimesToPlay = -1;
-		   obj.aniDuration = 10.0f;
+		   obj.taPoint = 0.0f;
+		   obj.taDuration = duration;
+		   obj.taIndex = 0;
+		   obj.taLengths = textureLengths;
+		   obj.taTextures = textures;
+		   obj.taTimesToPlay = times;
 	   }
    }
+   
 }

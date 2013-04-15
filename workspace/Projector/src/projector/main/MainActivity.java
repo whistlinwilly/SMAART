@@ -10,7 +10,9 @@ import projector.client.NetClient;
 import projector.rendering.GLView;
 
 import android.app.Activity;
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -25,12 +27,15 @@ public class MainActivity extends Activity {
 	public static final int FINAL_RENDERING = 3;
 	public static final int RUN = 4;
 	public static final int STOP = 5;
+	public static final int SUNRISE = 6;
+	public static final int STORM = 7;
 
 	public volatile GLView view;
 	public boolean mainGotMessage;
 	private NetClient netClient;
 	private static final String TAG = "NetClient";
 	public volatile int stage;
+	public MediaPlayer mp;
 	
    @Override
    public void onCreate(Bundle savedInstanceState) {
@@ -38,14 +43,14 @@ public class MainActivity extends Activity {
       
       //initialize things
       stage = 0;
-      netClient = new NetClient("10.0.1.187", 6881);
+      netClient = new NetClient("10.0.1.2", 6881);
       view = new GLView(this);
       view.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
 	  view.setKeepScreenOn(true);
       setContentView(view);
       view.renderer.mainActivity = this;
       view.renderer.netClient = this.netClient;
-      
+      mp = new MediaPlayer();
       netClient.execute(this);
       
    }
@@ -67,12 +72,15 @@ public class MainActivity extends Activity {
 			}
 		}
 		netClient.isListening = false;
+		
+		mp.stop();
    }
    
    @Override
    protected void onPause() {
        super.onPause();
        view.onPause();
+       mp.stop();
    }
 
    @Override
@@ -85,14 +93,69 @@ public class MainActivity extends Activity {
    public void init(){
 	   
 	 int aniNum = view.renderer.loadAnimation("test2.dae");
-	 int siteObj = view.renderer.loadObject("3cube_uv.obj");
+	 int birdAni = view.renderer.loadAnimation("birdAni.dae");
+	 int house = view.renderer.loadObject("stuccohouse.obj");
+	 int grass = view.renderer.loadObject("complexgrass.obj");
+	 int bird0 = view.renderer.loadObject("bird.obj");
+	 int bird1 = view.renderer.loadObject("bird.obj");
+	 int bird2 = view.renderer.loadObject("bird.obj");
 	//int siteObj = view.renderer.loadObject("SportsCube.obj");
-     int siteTex = view.renderer.loadTexture("ninesprite.bmp");
+	 int whiteTex = view.renderer.loadTexture("white.bmp");
+     int houseTex = view.renderer.loadTexture("stuccosprite.bmp");
+     int grassTex = view.renderer.loadTexture("grass.bmp");
+     int rainGrassTex = view.renderer.loadTexture("raingrass.bmp");
+     int rainGrass1Tex = view.renderer.loadTexture("raingrass2.bmp");
+     int rainGrass2Tex = view.renderer.loadTexture("raingrass3.bmp");
+     int birdTex = view.renderer.loadTexture("bird.bmp");
+     
      int siteTex2 = view.renderer.loadTexture("Site2.bmp");
      int siteTex3 = view.renderer.loadTexture("Site3.bmp");
-     if(siteObj >= 0){
-    	 view.renderer.setObjectTexture(siteObj, siteTex);
-   	  	 view.renderer.show(siteObj);
+     if(house >= 0){
+    	 view.renderer.setObjectTexture(house, houseTex);
+   	  	 view.renderer.show(house);
+     }
+     if(grass >= 0){
+    	 view.renderer.setObjectTexture(grass, grassTex);
+    	 view.renderer.show(grass);
+     }
+     if(bird0 >=0){
+    	 projector.rendering.Object oBird = view.renderer.objects.get(bird0);
+    	 oBird.x = -5.0f;
+    	 oBird.y = -2.0f;
+    	 oBird.z = 0.1f;
+    	 oBird.theta = 60.0f;
+    	 view.renderer.setObjectTexture(bird0, birdTex);
+     }
+     if(bird1 >=0){
+    	 projector.rendering.Object oBird = view.renderer.objects.get(bird1);
+    	 oBird.x = 0.0f;
+    	 oBird.y = -6.5f;
+    	 oBird.z = 0.1f;
+    	 view.renderer.setObjectTexture(bird1, birdTex);
+     }
+     if(bird2 >=0){
+    	 projector.rendering.Object oBird = view.renderer.objects.get(bird2);
+    	 oBird.x = 5.0f;
+    	 oBird.y = -3.0f;
+    	 oBird.z = 0.1f;
+    	 oBird.theta = 90.0f;
+    	 view.renderer.setObjectTexture(bird2, birdTex);
      }
    }
+
+public void playSound(String fileName){
+	if(mp.isPlaying()){
+		mp.stop();
+	}
+	try {
+		mp.reset();
+		mp.setDataSource(Environment.getExternalStorageDirectory() + "/Sounds/" + fileName);
+		mp.prepare();
+		mp.start();
+	} catch (Exception e){
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+
+}
 }

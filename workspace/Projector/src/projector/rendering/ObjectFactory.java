@@ -199,6 +199,25 @@ public class ObjectFactory {
 						newSurface.textures.put(textures.get(2 * textureIndex3));
 						newSurface.textures.put(textures.get(2 * textureIndex3 + 1));
 						newSurface.textures.position(0);
+						
+						ByteBuffer nbb = ByteBuffer.allocateDirect(3 * 3 * 4);
+						nbb.order(ByteOrder.nativeOrder());
+						newSurface.normals = nbb.asFloatBuffer();
+						
+						normalIndex1--;
+						normalIndex2--;
+						normalIndex3--;
+						
+						newSurface.normals.put(normals.get(3 * normalIndex1));
+						newSurface.normals.put(normals.get(3 * normalIndex1 + 1));
+						newSurface.normals.put(normals.get(3 * normalIndex1 + 2));
+						newSurface.normals.put(normals.get(3 * normalIndex2));
+						newSurface.normals.put(normals.get(3 * normalIndex2 + 1));
+						newSurface.normals.put(normals.get(3 * normalIndex2 + 2));
+						newSurface.normals.put(normals.get(3 * normalIndex3));
+						newSurface.normals.put(normals.get(3 * normalIndex3 + 1));
+						newSurface.normals.put(normals.get(3 * normalIndex3 + 2));
+						newSurface.normals.position(0);
 
 						newSurface.index = ByteBuffer.allocateDirect(indexArray.length);
 						newSurface.index.put(indexArray);
@@ -316,6 +335,22 @@ public class ObjectFactory {
 //				
 //				for(Object curObj: allObjects)
 //					toReturn[j++] = curObj;
+				
+				vertices = new ArrayList<Float>();
+				textures = new ArrayList<Float>();
+				normals = new ArrayList<Float>();
+				newSurfaces = new ArrayList<Surface>();
+				numFaces = 0;
+				lineIsThis = null;
+				readingVertices = false;
+				readingTextures = false;
+				readingNormals = false;
+				readingFaces = false;
+				
+				hasVertices  = false;
+				hasTextures = false;
+				hasNormals = false;
+				
 				
 				return newObj;
 						
