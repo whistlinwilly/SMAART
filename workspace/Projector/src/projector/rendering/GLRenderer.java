@@ -40,6 +40,8 @@ public class GLRenderer implements GLSurfaceView.Renderer {
    private final GLCircle smallCircle = new GLCircle(0,3,0.5f,100);
    
    boolean stoopidBoolean = false;
+   boolean sillyCodyBoolean = false;
+   
    
  //North / West
    private final GLCircle circ00 = new GLCircle(0,0,0.5f,100);
@@ -127,9 +129,15 @@ public class GLRenderer implements GLSurfaceView.Renderer {
    AnimationFactory ani = new AnimationFactory("/Animations");
 	
    /** The texture pointer */
-   private int[] textures = new int[10];
+   public int[] textures = new int[10];
    public MainActivity mainActivity;
    private int numAnimations = 0;
+   
+   int thisProjector;
+   ViewFrustrum[] projectors;
+private float alwaysFOV = 17.0f;
+private float alwaysNearPlane = 2.0f;
+private float alwaysFarPlane = 60.0f;
    
    
 
@@ -138,17 +146,51 @@ public class GLRenderer implements GLSurfaceView.Renderer {
    }
 
    public float[] parseData(){
+	   
 		String receiveValsString[];
 		float[] receiveVals = new float[10];
+		float[] eyeCoords = new float[3];
+		float[] centerCoords = new float[3];
+		float[] upCoords = new float[3];
 		
-		if (mainActivity.stage == MainActivity.RENDER_MAPPED){
+			
 			receiveValsString = netClient.inString.split(",");
-		//	Log.i(TAG, "Vals Received: " + receiveValsString[0] + "," + receiveValsString[1]  + "," + receiveValsString[2]  + "," + receiveValsString[3]  + "," + receiveValsString[4]  + "," + receiveValsString[5]);
-			for (int i=0; i < 10; i++) {
-				receiveVals[i] = Float.parseFloat(receiveValsString[i]);
-			//	Log.i(TAG, "FLOAT VALUE[" + i + "]: " + receiveVals[i]);
+			
+			projectors = new ViewFrustrum[(receiveValsString.length - 1) / 10];
+			
+			for(int k=0; k < projectors.length; k++)
+				projectors[k] = new ViewFrustrum();
+			
+			for(int i=0; i<receiveValsString.length - 1; i+=10){
+				
+				eyeCoords[0] = Float.parseFloat(receiveValsString[i + 1]);
+				eyeCoords[1] = Float.parseFloat(receiveValsString[i + 2]);
+				eyeCoords[2] = Float.parseFloat(receiveValsString[i + 3]);
+				
+				centerCoords[0] = Float.parseFloat(receiveValsString[i + 4]);
+				centerCoords[1] = Float.parseFloat(receiveValsString[i + 5]);
+				centerCoords[2] = Float.parseFloat(receiveValsString[i + 6]);
+				
+				upCoords[0] = Float.parseFloat(receiveValsString[i + 7]);
+				upCoords[1] = Float.parseFloat(receiveValsString[i + 8]);
+				upCoords[2] = Float.parseFloat(receiveValsString[i + 9]);
+				
+				ViewFrustrum crappy = projectors[i/10];
+				
+				crappy.initializeFrustrum(eyeCoords, centerCoords, upCoords, alwaysFOV, width/height, alwaysNearPlane, alwaysFarPlane);
+				
+				if( (i/10) == thisProjector)
+					for(int j = 0; j < 9; j++) {
+						if((j / 3) == 0)
+							receiveVals[j] = eyeCoords[j];
+						else if((j/3) == 1)
+							receiveVals[j] = centerCoords[j-3];
+						else
+							receiveVals[j] = upCoords[j-6];
+					}
+				
 			}
-		}
+		
 		
 		return receiveVals;
 	}
@@ -261,13 +303,17 @@ public class GLRenderer implements GLSurfaceView.Renderer {
       
       
       if(mainActivity.stage == MainActivity.IDLE || mainActivity.stage == MainActivity.RENDER_CIRCLES){
+    	  if(mainActivity.stage == MainActivity.IDLE && sillyCodyBoolean == false){
+    		  setProjector();
+    		  sillyCodyBoolean = true;
+    	  }
 
 		  // GLU.gluOrtho2D(gl, 0, width, 0, height);
 		   //used to be 17.5
     	  
     	//  gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
     	  
-		   GLU.gluPerspective(gl, 17.0f, ratio, 0.1f, 1000f); 
+		   GLU.gluPerspective(gl, alwaysFOV, ratio, alwaysNearPlane, alwaysFarPlane); 
 		   GLU.gluLookAt(gl, eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ);
 		      // Clear the screen to black
 		      gl.glClear(GL10.GL_COLOR_BUFFER_BIT
@@ -443,17 +489,23 @@ public class GLRenderer implements GLSurfaceView.Renderer {
       netClient.messageReady = false;
    }
    
-   public void setValues(float[] vals){
+   private void setProjector() {
+	   String[] temp = netClient.inString.split(",");
+	   thisProjector = Integer.parseInt(temp[1]);
+   }
+
+
+public void setValues(float[] vals){
 	   if (vals != null && vals.length > 5){
-		   eyeX = vals[1];
-		   eyeY = vals[2];
-		   eyeZ = vals[3];
-		   centerX = vals[4];
-		   centerY = vals[5];
-		   centerZ = vals[6];
-		   upX = vals[7];
-		   upY = vals[8];
-		   upZ = vals[9];
+		   eyeX = vals[0];
+		   eyeY = vals[1];
+		   eyeZ = vals[2];
+		   centerX = vals[3];
+		   centerY = vals[4];
+		   centerZ = vals[5];
+		   upX = vals[6];
+		   upY = vals[7];
+		   upZ = vals[8];
 	   }
    }
    
@@ -499,6 +551,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
    public int loadObject(String fileName){
 	      try {
 	    	  objects.add(factory.loadObject(fileName, context));
+	    	  objects.get(numObjects).setRenderer(this);
 	    	  return numObjects++;
 	  	} catch (FileNotFoundException e) {
 	  		// TODO Auto-generated catch block
@@ -581,5 +634,140 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 		   obj.taTimesToPlay = times;
 	   }
    }
+   
+   public boolean findProjector(Surface surface){
+		
+		int cornersInFrustrum = 0;
+		int[] goodProjectors;
+		
+		float[] vertices = new float[9];
+		surface.vertices.get(vertices, 0, 9);
+		surface.vertices.position(0);
+		
+//NOT SURE THIS IS NEEDED		
+		
+//		if(projectors[thisProjector].pointInFrustrum(vertices[0], vertices[1], vertices[2]))
+//			cornersInFrustrum++;
+//		
+//		if(projectors[thisProjector].pointInFrustrum(vertices[3], vertices[4], vertices[5]))
+//			cornersInFrustrum++;
+//		
+//		if(projectors[thisProjector].pointInFrustrum(vertices[6], vertices[7], vertices[8]))
+//			cornersInFrustrum++;
+//		
+//		if(cornersInFrustrum == 0)
+//			return false;
+		
+		goodProjectors = findViewingFrustrums(vertices); //returns all valid viewing frustrums by index
+		
+		if(goodProjectors == null)
+			return true;
+		
+		boolean hasThisProjector = false;
+		
+		for(int i: goodProjectors)
+			if(i == thisProjector)
+				hasThisProjector = true;
+		
+		if(hasThisProjector == false)
+			return false;
+		
+		return (thisProjector == findBestProjByAngle(goodProjectors, surface)); // dots all the surfaces with projectors
+		
+	}
+	
+	public int[] findViewingFrustrums(float[] vertices){
+		
+		int cornersInFrustrum = 0;
+		int vfNum = 0;
+		ArrayList<Integer> oneCornered = new ArrayList<Integer>();
+		ArrayList<Integer> twoCornered = new ArrayList<Integer>();
+		ArrayList<Integer> threeCornered = new ArrayList<Integer>();
+		
+		for(ViewFrustrum vf: projectors){
+			cornersInFrustrum = 0;
+			
+			if(vf.pointInFrustrum(vertices[0], vertices[1], vertices[2]))
+				cornersInFrustrum++;
+			
+			if(vf.pointInFrustrum(vertices[3], vertices[4], vertices[5]))
+				cornersInFrustrum++;
+			
+			if(vf.pointInFrustrum(vertices[6], vertices[7], vertices[8]))
+				cornersInFrustrum++;
+			
+			if(cornersInFrustrum == 3)
+				threeCornered.add(vfNum);
+			if(cornersInFrustrum == 2)
+				twoCornered.add(vfNum);
+			if(cornersInFrustrum == 1)
+				oneCornered.add(vfNum);
+				
+			vfNum++;
+			
+		}
+		
+		if(!threeCornered.isEmpty()){
+			int[] ints = new int[threeCornered.size()];
+			int n = 0;
+			for(Integer i: threeCornered)
+				ints[n++] = i;
+			return ints;
+		}
+		
+		if(!twoCornered.isEmpty()){
+			int[] ints = new int[twoCornered.size()];
+			int n = 0;
+			for(Integer i: twoCornered)
+				ints[n++] = i;
+			return ints;
+		}
+		
+		if(!oneCornered.isEmpty()){
+			int[] ints = new int[oneCornered.size()];
+			int n = 0;
+			for(Integer i: oneCornered)
+				ints[n++] = i;
+			return ints;
+		}
+		
+		return null;
+	}
+	
+	public int findBestProjByAngle(int[] goodProjectors, Surface surface){
+		
+		ViewFrustrum vf;
+		float bestAngle = 360.0f;
+		int bestProj = 0;
+		float[] surfaceToProjector = new float[3];
+		
+		for(int i = 0; i < goodProjectors.length; i++){
+			vf = projectors[goodProjectors[i]];
+			
+			surfaceToProjector[0] = vf.point[0] - surface.center[0];
+			surfaceToProjector[1] = vf.point[1] - surface.center[1];
+			surfaceToProjector[2] = vf.point[2] - surface.center[2];
+			
+			float angle = cosFromDot(surfaceToProjector, surface.normal);
+			
+			if(angle < bestAngle){
+				bestProj = goodProjectors[i];
+				bestAngle = angle;
+			}
+		}
+		
+		return bestProj;
+	}
+	
+	public float cosFromDot(float[] stp, float[] normal){
+		
+		float dot = stp[0] * normal[0] + stp[1] * normal[1] + stp[2] * normal[2];
+		float stpMag = (float) Math.sqrt(Math.pow(stp[0],2) + Math.pow(stp[1], 2) + Math.pow(stp[2],2));
+		float nMag = (float) Math.sqrt(Math.pow(normal[0],2) + Math.pow(normal[1], 2) + Math.pow(normal[2],2));
+		float angle = (float) Math.acos(dot / (stpMag * nMag));
+		
+		return angle;
+		
+	}
    
 }

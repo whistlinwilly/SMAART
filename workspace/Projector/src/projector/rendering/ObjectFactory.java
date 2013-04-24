@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
+
 import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
@@ -163,25 +164,41 @@ public class ObjectFactory {
 						
 						Log.w("Object Factory", "Found New Tri Face " + vertexIndex1 + "/" + vertexIndex2 + "/" + vertexIndex3);
 						
-						newSurface = new Surface();
+						vertexIndex1--;
+						vertexIndex2--;
+						vertexIndex3--;
+						
+						float x1 = vertices.get(3 * vertexIndex1);
+						float y1 = vertices.get(3 * vertexIndex1 + 1);
+						float z1 = vertices.get(3 * vertexIndex1 + 2);
+						float x2 = vertices.get(3 * vertexIndex2);
+						float y2 = vertices.get(3 * vertexIndex2 + 1);
+						float z2 = vertices.get(3 * vertexIndex2 + 2);
+						float x3 = vertices.get(3 * vertexIndex3);
+						float y3 = vertices.get(3 * vertexIndex3 + 1);
+						float z3 = vertices.get(3 * vertexIndex3 + 2);
+						
+						float avgX = (x1 + x2 + x3) / 3.0f;
+						float avgY = (y1 + y2 + y3) / 3.0f;
+						float avgZ = (z1 + z2 + z3) / 3.0f;
+						
+						newSurface = new Surface(avgX, avgY, avgZ);
 						
 						ByteBuffer bb = ByteBuffer.allocateDirect(3 * 3 * 4); //3 points * 3 floats each * sizeof(float)
 						bb.order(ByteOrder.nativeOrder());
 						newSurface.vertices = bb.asFloatBuffer();
 						
-						vertexIndex1--;
-						vertexIndex2--;
-						vertexIndex3--;
+
 						
-						newSurface.vertices.put(vertices.get(3 * vertexIndex1));
-						newSurface.vertices.put(vertices.get(3 * vertexIndex1 + 1));
-						newSurface.vertices.put(vertices.get(3 * vertexIndex1 + 2));
-						newSurface.vertices.put(vertices.get(3 * vertexIndex2));
-						newSurface.vertices.put(vertices.get(3 * vertexIndex2 + 1));
-						newSurface.vertices.put(vertices.get(3 * vertexIndex2 + 2));
-						newSurface.vertices.put(vertices.get(3 * vertexIndex3));
-						newSurface.vertices.put(vertices.get(3 * vertexIndex3 + 1));
-						newSurface.vertices.put(vertices.get(3 * vertexIndex3 + 2));
+						newSurface.vertices.put(x1);
+						newSurface.vertices.put(y1);
+						newSurface.vertices.put(z1);
+						newSurface.vertices.put(x2);
+						newSurface.vertices.put(y2);
+						newSurface.vertices.put(z2);
+						newSurface.vertices.put(x3);
+						newSurface.vertices.put(y3);
+						newSurface.vertices.put(z3);
 						newSurface.vertices.position(0);
 						
 						ByteBuffer tbb = ByteBuffer.allocateDirect(2 * 3 * 4);
@@ -208,15 +225,37 @@ public class ObjectFactory {
 						normalIndex2--;
 						normalIndex3--;
 						
-						newSurface.normals.put(normals.get(3 * normalIndex1));
-						newSurface.normals.put(normals.get(3 * normalIndex1 + 1));
-						newSurface.normals.put(normals.get(3 * normalIndex1 + 2));
-						newSurface.normals.put(normals.get(3 * normalIndex2));
-						newSurface.normals.put(normals.get(3 * normalIndex2 + 1));
-						newSurface.normals.put(normals.get(3 * normalIndex2 + 2));
-						newSurface.normals.put(normals.get(3 * normalIndex3));
-						newSurface.normals.put(normals.get(3 * normalIndex3 + 1));
-						newSurface.normals.put(normals.get(3 * normalIndex3 + 2));
+						x1 = normals.get(3 * normalIndex1);
+						y1 = normals.get(3 * normalIndex1 + 1);
+						z1 = normals.get(3 * normalIndex1 + 2);
+						x2 = normals.get(3 * normalIndex2);
+						y2 = normals.get(3 * normalIndex2 + 1);
+						z2 = normals.get(3 * normalIndex2 + 2);
+						x3 = normals.get(3 * normalIndex3);
+						y3 = normals.get(3 * normalIndex3 + 1);
+						z3 = normals.get(3 * normalIndex3 + 2);
+						
+						avgX = (x1 + x2 + x3) / 3.0f;
+						avgY = (y1 + y2 + y3) / 3.0f;
+						avgZ = (z1 + z2 + z3) / 3.0f;
+						
+						float normalize = (float) Math.sqrt(Math.pow(avgX,2) + Math.pow(avgY, 2) + Math.pow(avgZ, 2));
+						
+						avgX /= normalize;
+						avgY /= normalize;
+						avgZ /= normalize;
+						
+						newSurface.setNormals(avgX, avgY, avgZ);
+						
+						newSurface.normals.put(x1);
+						newSurface.normals.put(y1);
+						newSurface.normals.put(z1);
+						newSurface.normals.put(x2);
+						newSurface.normals.put(y2);
+						newSurface.normals.put(z2);
+						newSurface.normals.put(x3);
+						newSurface.normals.put(y3);
+						newSurface.normals.put(z3);
 						newSurface.normals.position(0);
 
 						newSurface.index = ByteBuffer.allocateDirect(indexArray.length);

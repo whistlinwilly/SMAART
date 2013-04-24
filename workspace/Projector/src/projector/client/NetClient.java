@@ -35,7 +35,7 @@ public class NetClient extends AsyncTask<MainActivity, MainActivity, MainActivit
     public int port;
     
     public boolean connected;
-    public byte[] inBuffer= new byte[128];
+    public byte[] inBuffer= new byte[1024];
     public volatile String inString = null;
     public String outString;
     public byte[] outBuffer = new byte[1];

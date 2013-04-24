@@ -9,7 +9,7 @@ Table::Table(char* ip, int port, int camNum){
 	sn = new ServerNetwork(ip, port);
 	tCam.initFastCam(camNum);
 	recvbuf = (char*)malloc(MAX_REC_BUF*sizeof(char));
-	tableBGsub = new BackgroundSubtractorMOG2(0, 350, true);
+	tableBGsub = new BackgroundSubtractorMOG2(0, 300, true);
 	projectorsConnected = 0;
 }
 

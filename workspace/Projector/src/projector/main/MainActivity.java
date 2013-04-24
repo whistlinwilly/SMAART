@@ -42,7 +42,7 @@ public class MainActivity extends Activity {
       super.onCreate(savedInstanceState);
       
       //initialize things
-      stage = 0;
+      stage = -1;
       netClient = new NetClient("10.0.1.2", 6881);
       view = new GLView(this);
       view.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
@@ -100,6 +100,7 @@ public class MainActivity extends Activity {
 	 int bird1 = view.renderer.loadObject("bird.obj");
 	 int bird2 = view.renderer.loadObject("bird.obj");
 	//int siteObj = view.renderer.loadObject("SportsCube.obj");
+	 int blackTex = view.renderer.loadTexture("black.bmp");
 	 int whiteTex = view.renderer.loadTexture("white.bmp");
      int houseTex = view.renderer.loadTexture("stuccosprite.bmp");
      int grassTex = view.renderer.loadTexture("grass.bmp");
@@ -108,8 +109,8 @@ public class MainActivity extends Activity {
      int rainGrass2Tex = view.renderer.loadTexture("raingrass3.bmp");
      int birdTex = view.renderer.loadTexture("bird.bmp");
      
-     int siteTex2 = view.renderer.loadTexture("Site2.bmp");
-     int siteTex3 = view.renderer.loadTexture("Site3.bmp");
+//     int siteTex2 = view.renderer.loadTexture("Site2.bmp");
+//     int siteTex3 = view.renderer.loadTexture("Site3.bmp");
      if(house >= 0){
     	 view.renderer.setObjectTexture(house, houseTex);
    	  	 view.renderer.show(house);

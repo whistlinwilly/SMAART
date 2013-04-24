@@ -22,9 +22,17 @@ void Initialization::connectToProjectors(ServerNetwork* sn){
 		projectorsConnected++;
 	}
 
+	String sProjNum;
+	char buf[10];
 	//sends init number to projectors to test connection
 	for (int i=0; i<NUM_PROJECTORS; i++){
-		sn->sendToAll("0",5,i);
+		sProjNum = "0,";
+		itoa(i,buf,10);
+		sProjNum.append(buf);
+		sProjNum.append(",");
+		char* temp = (char*) sProjNum.c_str();
+		int x = sProjNum.length();
+		sn->sendToAll(temp,x,i);
 		sn->receiveData(i,recvbuf);
 	}
 }
@@ -88,21 +96,52 @@ void Initialization::computePerspective(int projNum, ServerNetwork* sn){
 } 
 
 void Initialization::sendPerspectives(ServerNetwork* sn){
-	char* coordString;
-	for (int i=0; i<NUM_PROJECTORS; i++){
-		
-		//build the perspective string
-		coordString = mapper->buildString(i);
 
-		sn->sendToAll(coordString, strlen(coordString),i);
-		sn->receiveData(i,recvbuf);
-		waitKey(1000);
+	char** perspectiveArray = (char**) malloc(sizeof(char*) * NUM_PROJECTORS);
+	char* tempString;
+	char* finalString;
+	int length = 0;
+	int index = 0;
 
-		//send the command to render the mapping
-		sn->sendToAll("3",5,i);
-		sn->receiveData(i,recvbuf);
-		waitKey(1000);
-
+	for(int i=0; i<NUM_PROJECTORS; i++){
+		tempString = mapper->buildString(i);
+		length += strlen(tempString);
+		perspectiveArray[i] = tempString;
 	}
+
+	finalString = new char[length];
+
+	for(int j=0; j<NUM_PROJECTORS; j++){
+		length = strlen(perspectiveArray[j]);
+		memcpy(finalString + index, perspectiveArray[j], length);
+		index += length;
+	}
+	
+	for(int n=0; n<NUM_PROJECTORS; n++){
+		waitKey(300);
+		sn->sendToAll(finalString, strlen(finalString), n);
+		sn->receiveData(n, recvbuf);
+		waitKey(600);
+		sn->sendToAll("3",5,n);
+		sn->receiveData(n,recvbuf);
+	}
+
+//CODYS OLD CODE
+	//char* coordString;
+	//for (int i=0; i<NUM_PROJECTORS; i++){
+	//	
+	//	//build the perspective string
+	//	coordString = mapper->buildString(i);
+
+	//	sn->sendToAll(coordString, strlen(coordString),i);
+	//	sn->receiveData(i,recvbuf);
+	//	waitKey(1000);
+
+	//	//send the command to render the mapping
+	//	sn->sendToAll("3",5,i);
+	//	sn->receiveData(i,recvbuf);
+	//	waitKey(1000);
+
+	//}
 
 }
