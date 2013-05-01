@@ -2,6 +2,8 @@
 #include <opencv\highgui.h>
 #include "DefinedObjects.h"
 
+#ifndef _IM_H_
+#define _IM_H_
 class ImageManip
 {
 public:
@@ -9,3 +11,5 @@ public:
 	static cv::Mat extractDoubleCircleData(circleData* cdat, cv::Mat image, int minContourLength, int minCircleSize, float minRadialDifference, cv::Mat toReturn);
 	static void orderCorners(cv::Point2f* corners);
 };
+
+#endif

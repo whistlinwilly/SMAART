@@ -70,7 +70,7 @@ void Initialization::readInitPattern(int projNum, BackgroundSubtractorMOG2* BGsu
 	Mat twoCircles;
 	
 
- 	sn->sendToAll("1",5,projNum);
+ 	sn->sendToAll("1,",5,projNum);
 	sn->receiveData(projNum,recvbuf);
 
 	waitKey(100);
@@ -88,6 +88,8 @@ void Initialization::readInitPattern(int projNum, BackgroundSubtractorMOG2* BGsu
 	twoCircles = ImageManip::extractDoubleCircleData(mapper->cDat, bCan, 20, 100, 15, bgFrame);
 
 	imshow("CIRCLES", twoCircles);
+
+	imwrite("circles.jpg",twoCircles);
 	waitKey(100);
 }
 
@@ -121,9 +123,6 @@ void Initialization::sendPerspectives(ServerNetwork* sn){
 		waitKey(300);
 		sn->sendToAll(finalString, strlen(finalString), n);
 		sn->receiveData(n, recvbuf);
-		waitKey(600);
-		sn->sendToAll("3",5,n);
-		sn->receiveData(n,recvbuf);
 	}
 
 //CODYS OLD CODE

@@ -1,6 +1,9 @@
 #include "DefinedObjects.h"
 #include "ImageManip.h"
 
+#ifndef _CAMERA_H_
+#define _CAMERA_H_
+
 class Camera
 {
 
@@ -20,3 +23,5 @@ public:
 	cv::Mat grabFrame();
 	cv::Mat grabFrameWithPerspective(CameraPerspective cp);
 };
+
+#endif

@@ -67,6 +67,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="ColorChanging.h" />
     <ClInclude Include="DefinedObjects.h" />
     <ClInclude Include="ImageManip.h" />
     <ClInclude Include="Initialization.h" />
@@ -78,6 +79,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="ColorChanging.cpp" />
     <ClCompile Include="ImageManip.cpp" />
     <ClCompile Include="Initialization.cpp" />
     <ClCompile Include="main.cpp" />

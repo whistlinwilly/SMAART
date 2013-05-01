@@ -3,7 +3,8 @@
 
 using namespace cv;
 
-
+#ifndef _TABLE_H_
+#define _TABLE_H
 class Table
 {
 public:
@@ -24,3 +25,5 @@ public:
 	void run();
 
 };
+
+#endif

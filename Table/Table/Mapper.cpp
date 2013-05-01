@@ -57,7 +57,7 @@ void Mapper::loadProjectorData(int projNum){
 
 
 			//billys crap
-	float correctionValue = 1.0f;
+	float correctionValue = 1.8f;
 	float correctedCenter[2];
 	float correctionVector[2];
 	float correctionRatio;
@@ -96,13 +96,13 @@ void Mapper::loadProjectorData(int projNum){
 		centerY = eyeY;
 
 		//focal shift correction
-		correctionVector[0] = cos(toRads(modRot));
+		/*correctionVector[0] = cos(toRads(modRot));
 		correctionVector[1] = sin(toRads(modRot));
 		correctionRatio = 1.0 - sin(toRads(incidentAngle));
 		correctedCenter[0] = centerX - correctionVector[0] * correctionValue * correctionRatio;
 		correctedCenter[1] = centerY - correctionVector[1] * correctionValue * correctionRatio;
 		centerX = correctedCenter[0];
-		centerY = correctedCenter[1];
+		centerY = correctedCenter[1];*/
 
 		eyeX = eyeX + eyeDeltaX;
 		eyeY = eyeY + eyeDeltaY;
@@ -147,13 +147,13 @@ void Mapper::loadProjectorData(int projNum){
 		centerY = eyeY;
 
 		//focal shift correction
-		correctionVector[0] = cos(toRads(modRot));
+		/*correctionVector[0] = cos(toRads(modRot));
 		correctionVector[1] = sin(toRads(modRot));
 		correctionRatio = 1.0 - sin(toRads(incidentAngle));
 		correctedCenter[0] = centerX - correctionVector[0] * correctionValue * correctionRatio;
 		correctedCenter[1] = centerY - correctionVector[1] * correctionValue * correctionRatio;
 		centerX = correctedCenter[0];
-		centerY = correctedCenter[1];
+		centerY = correctedCenter[1];*/
 
 		eyeX = eyeX + eyeDeltaX;
 		eyeY = eyeY + eyeDeltaY;

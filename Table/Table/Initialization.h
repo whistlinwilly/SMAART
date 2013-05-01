@@ -7,6 +7,9 @@
 
 using namespace cv;
 
+#ifndef _INIT_H_
+#define _INIT_H
+
 class Initialization
 {
 public:
@@ -27,3 +30,4 @@ public:
 	void sendPerspectives(ServerNetwork* sn);
 };
 
+#endif

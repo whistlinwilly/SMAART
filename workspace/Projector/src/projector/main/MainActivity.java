@@ -100,7 +100,7 @@ public class MainActivity extends Activity {
 	 int bird1 = view.renderer.loadObject("bird.obj");
 	 int bird2 = view.renderer.loadObject("bird.obj");
 	//int siteObj = view.renderer.loadObject("SportsCube.obj");
-	 int blackTex = view.renderer.loadTexture("black.bmp");
+	// int blackTex = view.renderer.loadTexture("black.bmp");
 	 int whiteTex = view.renderer.loadTexture("white.bmp");
      int houseTex = view.renderer.loadTexture("stuccosprite.bmp");
      int grassTex = view.renderer.loadTexture("grass.bmp");

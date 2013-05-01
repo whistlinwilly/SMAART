@@ -100,21 +100,21 @@ public class Object {
 	  		gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, surfaces[i].textures);
 	  		gl.glNormalPointer(GL10.GL_FLOAT, 0, surfaces[i].normals);
 	    	  
-	  		if(renderer.findProjector(surfaces[i]))
+	  	//	if(renderer.findProjector(surfaces[i]))
 	    	  gl.glDrawElements(GL10.GL_TRIANGLES, 3, GL10.GL_UNSIGNED_BYTE, surfaces[i].index);
-	  		else{
-	  			   gl.glDisable(GL10.GL_TEXTURE_2D);
-				   gl.glActiveTexture(GL10.GL_TEXTURE0);
-				   gl.glClientActiveTexture(GL10.GL_TEXTURE0);
-				   gl.glEnable(GL10.GL_TEXTURE_2D);
-				   gl.glBindTexture(GL10.GL_TEXTURE_2D, renderer.textures[0]);
-				   gl.glDrawElements(GL10.GL_TRIANGLES, 3, GL10.GL_UNSIGNED_BYTE, surfaces[i].index);
-				   gl.glDisable(GL10.GL_TEXTURE_2D);
-				   gl.glActiveTexture(GL10.GL_TEXTURE0 + texNum);
-				   gl.glClientActiveTexture(GL10.GL_TEXTURE0 + texNum);
-				   gl.glEnable(GL10.GL_TEXTURE_2D);
-				   gl.glBindTexture(GL10.GL_TEXTURE_2D, renderer.textures[texNum]);
-	  		}
+//	  		else{
+//	  			   gl.glDisable(GL10.GL_TEXTURE_2D);
+//				   gl.glActiveTexture(GL10.GL_TEXTURE0);
+//				   gl.glClientActiveTexture(GL10.GL_TEXTURE0);
+//				   gl.glEnable(GL10.GL_TEXTURE_2D);
+//				   gl.glBindTexture(GL10.GL_TEXTURE_2D, renderer.textures[0]);
+//				   gl.glDrawElements(GL10.GL_TRIANGLES, 3, GL10.GL_UNSIGNED_BYTE, surfaces[i].index);
+//				   gl.glDisable(GL10.GL_TEXTURE_2D);
+//				   gl.glActiveTexture(GL10.GL_TEXTURE0 + texNum);
+//				   gl.glClientActiveTexture(GL10.GL_TEXTURE0 + texNum);
+//				   gl.glEnable(GL10.GL_TEXTURE_2D);
+//				   gl.glBindTexture(GL10.GL_TEXTURE_2D, renderer.textures[texNum]);
+//	  		}
 	      
 	      }
 	      gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);

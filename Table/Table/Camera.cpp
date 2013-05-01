@@ -198,18 +198,22 @@ CameraPerspective Camera::tryRotation(void){
 
 	cvtColor( cam, grey, CV_RGB2GRAY);
 
+	imwrite("grayscale.jpg", grey);
+
 	GaussianBlur( grey, gauss, Size( 3, 3 ), 0, 0 );
 	namedWindow("new", CV_WINDOW_AUTOSIZE);
 
 		imshow("new", gauss);
 	waitKey();
 
+	imwrite("gauss.jpg", gauss);
+
 	Canny(gauss, can, 20, 60, 3);
 
 	imshow("new", can);
 	waitKey();
 
-
+	imwrite("canny.jpg",can);
 	vector<vector<Point> > contours;
 	findContours(can, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
 
@@ -246,9 +250,14 @@ CameraPerspective Camera::tryRotation(void){
 		threshold( gauss, thre, i, 255.0, THRESH_BINARY);
 		imshow("new",thre);
 	};
+
+	imwrite("rotated.jpg",thre);
+
 	Canny(thre, can, 10, 250, 3);
 		//imshow("new", can);
 	//waitKey();
+
+	imwrite("rotatedcanny.jpg",can);
 	vector<Vec2f> lines;
 	HoughLines(can, lines, 1, CV_PI/180, 25, 0, 0 );
 
@@ -274,6 +283,8 @@ CameraPerspective Camera::tryRotation(void){
 		line(rotated,pt1,pt2,Scalar(255,0,0),1);
 	}
 	myObj.pic = rotated;
+
+	imwrite("lines.jpg",rotated);
 
 	return myObj;
 }
@@ -356,6 +367,9 @@ CameraPerspective Camera::findCorners(void){
 
 	imshow("camRotation", myObj.pic);
 	//waitKey();
+
+	imwrite("final.jpg",myObj.pic);
+
 	return myObj;
 }
 

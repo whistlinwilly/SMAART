@@ -1,6 +1,12 @@
 #include <opencv\cv.h>
 
-#define NUM_PROJECTORS (2)
+#define NUM_PROJECTORS (1)
+
+#define NUM_SQUARES (80)
+#define NUM_TRIANGLES (NUM_SQUARES * NUM_SQUARES * 2)
+
+#ifndef _DEFOBJ_H_
+#define _DEFOBJ_H_
 
 //Table X and Y length on image plane
 #define TABLE_X (480)
@@ -16,12 +22,12 @@
 
 //Width of table in inches
 #ifndef TABLE_WIDTH
-#define TABLE_WIDTH (19.5)
+#define TABLE_WIDTH (19.8125)
 #endif 
 
 //Height of table in inches
 #ifndef TABLE_HEIGHT
-#define TABLE_HEIGHT (19.5)
+#define TABLE_HEIGHT (19.8125)
 #endif 
 
 
@@ -65,4 +71,6 @@ typedef struct{
 	float upX, upY, upZ;
 	
 }ProDat;
+#endif
+
 #endif

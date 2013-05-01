@@ -13,7 +13,8 @@
 #include <WinSock2.h>
 #include <map>
 
-
+#ifndef _SN_H_
+#define _SN_H_
 class ServerNetwork
 {
 
@@ -46,3 +47,4 @@ public:
 	void parseReceived(char *string);
 };
 
+#endif

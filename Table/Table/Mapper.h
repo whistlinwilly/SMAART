@@ -2,6 +2,8 @@
 
 using namespace std;
 
+#ifndef _MAPPER_H_
+#define _MAPPER_H
 class Mapper
 {
 public:
@@ -22,3 +24,5 @@ public:
 	void upFromTwist(float centerX, float centerY, float eyeX, float eyeY, float eyeZ, float twist, float *up);
 	char* buildString(int projNum);
 };
+
+#endif
