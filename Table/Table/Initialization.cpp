@@ -32,7 +32,7 @@ void Initialization::connectToProjectors(ServerNetwork* sn){
 		sProjNum.append(",");
 		char* temp = (char*) sProjNum.c_str();
 		int x = sProjNum.length();
-		sn->sendToAll(temp,x,i);
+		sn->sendToClient(temp,x,i);
 		sn->receiveData(i,recvbuf);
 	}
 }
@@ -70,7 +70,8 @@ void Initialization::readInitPattern(int projNum, BackgroundSubtractorMOG2* BGsu
 	Mat twoCircles;
 	
 
- 	sn->sendToAll("1,",5,projNum);
+
+ 	sn->sendToClient("1,",5,projNum);
 	sn->receiveData(projNum,recvbuf);
 
 	waitKey(100);
@@ -121,7 +122,7 @@ void Initialization::sendPerspectives(ServerNetwork* sn){
 	
 	for(int n=0; n<NUM_PROJECTORS; n++){
 		waitKey(300);
-		sn->sendToAll(finalString, strlen(finalString), n);
+		sn->sendToClient(finalString, strlen(finalString), n);
 		sn->receiveData(n, recvbuf);
 	}
 

@@ -12,6 +12,7 @@
 #include "NetworkServices.h"
 #include <WinSock2.h>
 #include <map>
+#include "DefinedObjects.h"
 
 #ifndef _SN_H_
 #define _SN_H_
@@ -19,7 +20,7 @@ class ServerNetwork
 {
 
 public:
-
+	char* recvbuf;
     ServerNetwork(char* ip, int port);
     ~ServerNetwork();
 
@@ -37,8 +38,11 @@ public:
 
 	bool acceptNewClient(unsigned int & id);
 
-	// send data to all clients
-    void sendToAll(char * packets, int totalSize, int client_id);
+	// send data to client
+    void sendToClient(char * packets, int totalSize, int client_id);
+
+	// send data to all clients & receive
+    void sendToAllReceive(char* packets, int totalSize);
 
 	// receive incoming data
     int receiveData(unsigned int client_id, char * recvbuf);

@@ -4,7 +4,7 @@
 #include "Initialization.h"
 #include "Table.h"
 #include "ColorChanging.h"
-
+#include "HouseDemo.h"
 
 Table::Table(char* ip, int port, int camNum){
 	sn = new ServerNetwork(ip, port);
@@ -15,7 +15,7 @@ Table::Table(char* ip, int port, int camNum){
 }
 
 void Table::initialize(){
-	Initialization* tableInit = new Initialization();
+	tableInit = new Initialization();
 
 	//connect all the projectors
 	tableInit->connectToProjectors(sn);
@@ -31,46 +31,51 @@ void Table::initialize(){
 	for (int i=0; i<NUM_PROJECTORS; i++){
 		tableInit->readInitPattern(i, tableBGsub, tCam, sn);
 		tableInit->computePerspective(i, sn);
-		sn->sendToAll("0,", 2, i);
+
+		sn->sendToClient("0,", 2, i);
 		sn->receiveData(i, recvbuf);
 	}
 
 	//send every projector their perspectives
 	tableInit->sendPerspectives(sn);
-
-	sn->sendToAll("3,",2,0);
-	sn->receiveData(0, recvbuf);
-	sn->sendToAll("3,",2,1);
-	sn->receiveData(1,recvbuf);
-
-	sn->sendToAll("4,",2,0);
-	sn->receiveData(0, recvbuf);
-
-	sn->sendToAll("4,",2,1);
-	sn->receiveData(1,recvbuf);
-
-	//CODE BELOW FOR STUCCO HOUSE
-	sn->sendToAll("6",2,0);
-	sn->receiveData(0, recvbuf);
-	sn->sendToAll("6",2,1);
-	sn->receiveData(1,recvbuf);
-
-	sn->sendToAll("7",2,0);
-	sn->receiveData(0, recvbuf);
-	sn->sendToAll("7",2,1);
-	sn->receiveData(1,recvbuf);
-
-	sn->sendToAll("5",2,0);
-	sn->receiveData(0, recvbuf);
-	sn->sendToAll("5",2,1);
-	sn->receiveData(1,recvbuf);
-	//END STUCCO HOUSE
-
-
 }
 
 void Table::run(){
-	//ColorChanging* cc = new ColorChanging(tCam, cp, sn);
+
+	//declare all demos
+	HouseDemo* hd;
+	ColorChanging* cc;
+	char keyPressed;
+	keyPressed = waitKey();
+
+	switch(keyPressed){
+		case 'c':
+			sn->sendToAllReceive("3,colorChange", 13);
+			cc = new ColorChanging(tCam, cp, sn);
+			break;
+		case 'h':
+			sn->sendToAllReceive("3,houseDemo00", 13);
+			hd = new HouseDemo(sn);
+			break;
+		case 'a':
+			sn->sendToAllReceive("3,alexDemo000", 13);
+			break;
+		case 's':
+			sn->sendToAllReceive("3,spaceDemo00", 13);
+			break;
+		case 'i':
+			sn->sendToAllReceive("3,INIT", 6);
+			//read init pattern for each projector
+			for (int i=0; i<NUM_PROJECTORS; i++){
+				tableInit->readInitPattern(i, tableBGsub, tCam, sn);
+				tableInit->computePerspective(i, sn);
+				sn->sendToClient("0,", 2, i);
+				sn->receiveData(i, recvbuf);
+			}
+			tableInit->sendPerspectives(sn);
+			break;
+
+	}
 }
 
 

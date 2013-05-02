@@ -8,6 +8,7 @@ using namespace cv;
 class Table
 {
 public:
+	Initialization* tableInit;
 	Table(char* ip, int port, int camNum);
 	ServerNetwork *sn;
 	Camera tCam;

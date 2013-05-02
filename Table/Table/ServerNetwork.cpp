@@ -18,6 +18,8 @@ ServerNetwork::ServerNetwork(char* ip, int port)
 
 	HOSTENT* hostent;
 	SOCKADDR_IN sockAddr = {0};
+
+	recvbuf = new char[20];
     
     
 
@@ -133,7 +135,7 @@ void ServerNetwork::parseReceived(char *string){
 }
 
 // send data to all clients
-void ServerNetwork::sendToAll(char * packets, int totalSize, int client_id)
+void ServerNetwork::sendToClient(char * packets, int totalSize, int client_id)
 {
     SOCKET currentSocket;
     std::map<unsigned int, SOCKET>::iterator iter;
@@ -150,4 +152,11 @@ void ServerNetwork::sendToAll(char * packets, int totalSize, int client_id)
         }
 
     }
+}
+
+void ServerNetwork::sendToAllReceive(char* packets, int totalSize){
+	for (int i=0; i<NUM_PROJECTORS; i++){
+			sendToClient(packets, totalSize, i);
+			receiveData(i, recvbuf);
+	}
 }
