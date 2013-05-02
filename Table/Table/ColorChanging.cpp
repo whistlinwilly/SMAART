@@ -57,6 +57,8 @@ void ColorChanging::run(){
 		for (int i=0; i<NUM_PROJECTORS; i++){
 			appSn->sendToAll(stringToSend, strlen(stringToSend),i);
 		}
+		//this also includes receiveData which was commented out below
+		appSn->sendToAllReceive(stringToSend, strlen(stringToSend));
 
 		blockedTriangles.erase(blockedTriangles.begin(), blockedTriangles.end());
 	}
