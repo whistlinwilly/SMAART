@@ -49,8 +49,62 @@ void Table::initialize(){
 	sn->sendToAll("4,",2,1);
 	sn->receiveData(1,recvbuf);
 
+	sn->sendToAll("5,",2,0);
+	sn->receiveData(0, recvbuf);
+
+	sn->sendToAll("5,",2,1);
+	sn->receiveData(1,recvbuf);
+
+	sn->sendToAll("6,",2,0);
+	sn->receiveData(0, recvbuf);
+
+	sn->sendToAll("6,",2,1);
+	sn->receiveData(1,recvbuf);
+
+	sn->sendToAll("7,",2,0);
+	sn->receiveData(0, recvbuf);
+
+	sn->sendToAll("7,",2,1);
+	sn->receiveData(1,recvbuf);
+
+	sn->sendToAll("8,",2,0);
+	sn->receiveData(0, recvbuf);
+
+	sn->sendToAll("8,",2,1);
+	sn->receiveData(1,recvbuf);
+
+	sn->sendToAll("9,",2,0);
+	sn->receiveData(0, recvbuf);
+
+	sn->sendToAll("9,",2,1);
+	sn->receiveData(1,recvbuf);
+
+	sn->sendToAll("10,",2,0);
+	sn->receiveData(0, recvbuf);
+
+	sn->sendToAll("10,",2,1);
+	sn->receiveData(1,recvbuf);
+
+	sn->sendToAll("11,",2,0);
+	sn->receiveData(0, recvbuf);
+
+	sn->sendToAll("11,",2,1);
+	sn->receiveData(1,recvbuf);
+
+	sn->sendToAll("12,",2,0);
+	sn->receiveData(0, recvbuf);
+
+	sn->sendToAll("12,",2,1);
+	sn->receiveData(1,recvbuf);
+
+	sn->sendToAll("13,",2,0);
+	sn->receiveData(0, recvbuf);
+
+	sn->sendToAll("13,",2,1);
+	sn->receiveData(1,recvbuf);
+
 	//CODE BELOW FOR STUCCO HOUSE
-	sn->sendToAll("6",2,0);
+	/*sn->sendToAll("6",2,0);
 	sn->receiveData(0, recvbuf);
 	sn->sendToAll("6",2,1);
 	sn->receiveData(1,recvbuf);
@@ -63,7 +117,7 @@ void Table::initialize(){
 	sn->sendToAll("5",2,0);
 	sn->receiveData(0, recvbuf);
 	sn->sendToAll("5",2,1);
-	sn->receiveData(1,recvbuf);
+	sn->receiveData(1,recvbuf);*/
 	//END STUCCO HOUSE
 
 

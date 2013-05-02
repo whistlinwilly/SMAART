@@ -1,6 +1,6 @@
 #include <opencv\cv.h>
 
-#define NUM_PROJECTORS (1)
+#define NUM_PROJECTORS (2)
 
 #define NUM_SQUARES (80)
 #define NUM_TRIANGLES (NUM_SQUARES * NUM_SQUARES * 2)
@@ -12,7 +12,7 @@
 #define TABLE_X (480)
 #define TABLE_Y (480)
 
-#define DEFAULT_DISTANCE 15.75
+#define DEFAULT_DISTANCE (14.5)
 
 //Error in pixels that corner of table can be off image plane
 #define X_INTERSECT_ERROR_MARGIN (200)
