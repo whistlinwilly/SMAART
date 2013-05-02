@@ -12,6 +12,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 import projector.main.MainActivity;
+import projector.rendering.GLRenderer;
 
 import android.app.Activity;
 import android.content.Context;
@@ -33,7 +34,7 @@ public class NetClient extends AsyncTask<MainActivity, MainActivity, MainActivit
     public volatile Socket socket = null;
     public String host = null;
     public int port;
-    
+    public volatile int command;
     public boolean connected;
     public byte[] inBuffer = new byte[BUFFER_SIZE];
     public volatile String inString = null;
@@ -46,7 +47,7 @@ public class NetClient extends AsyncTask<MainActivity, MainActivity, MainActivit
     
     private float[] receiveVals = new float[10];
     private String[] receiveValsString;
-	
+	private int bytesReceived;
     /**
      * Constructor with Host, Port and MAC Address
      * @param host
@@ -90,7 +91,6 @@ public class NetClient extends AsyncTask<MainActivity, MainActivity, MainActivit
     
     public void parseReceived(MainActivity activity){
     	
-    	int command;
     	String[] slody = inString.split(",");
     	String commandString = slody[0];
     	command = Integer.parseInt(commandString);
@@ -99,10 +99,7 @@ public class NetClient extends AsyncTask<MainActivity, MainActivity, MainActivit
     	
 
     	
-    	if (activity.stage == MainActivity.RUN){
-    		updateColorArray(activity);
-    	}
-    	else if (command == MainActivity.STOP){
+    	if (command == MainActivity.STOP){
        		if (connected) {
     			Log.i(TAG, "Socket is closing...");
     			try {
@@ -117,64 +114,46 @@ public class NetClient extends AsyncTask<MainActivity, MainActivity, MainActivit
     			Log.e(TAG, "Socket was already closed!");
     		}
     	}
-    	//stop this projector (should exit thread and close socket)
-    	else { 
-    		if(command == MainActivity.SUNRISE){
-    			activity.playSound("rooster.mp3");
-    			activity.view.renderer.lightStage = 0;
+    	else {
+    		//run the app specified
+    		activity.stage = command;
+    		if (command == MainActivity.RUN){
+    			
+    			//run colorchanging demo
+    			if (inString.substring(2, inString.length()).equals("colorChange")) activity.view.renderer.application = GLRenderer.COLORCHANGING;
+    			
+    			//run house demo
+    			else if (inString.substring(2, inString.length()).equals("houseDemo00")) activity.view.renderer.application = GLRenderer.HOUSE;
+    			
+    			
+    			//RUN INIT AGAIN
+    			else if (inString.substring(2, inString.length()).equals("INIT")) {
+    				activity.view.renderer.eyeX = 0.0f;
+    				activity.view.renderer.eyeY = 0.0f;
+    				activity.view.renderer.eyeZ = 24.0f;
+    				activity.view.renderer.centerX = 0.0f;
+    				activity.view.renderer.centerY = 0.0f;
+    				activity.view.renderer.centerZ = 0.0f;
+    				activity.view.renderer.upX = 0.0f;
+    				activity.view.renderer.upY = 1.0f;
+    				activity.view.renderer.upZ = 0.0f;
+    				activity.view.renderer.perspectiveSet = false;
+    				activity.stage = MainActivity.RENDER_CIRCLES;
     			}
-    		else if(command == MainActivity.STORM){
-    			activity.view.renderer.lightStage = 2;
+    			
     		}
-    		else if(command == 100){
-    			updateColorArray(activity);
-    		}
-    		else
-    			activity.stage = command;
     	}
     	
     	
     		
     }
-
-    private void updateColorArray(MainActivity activity) {
-		String[] indices = inString.split(",");
-		
-//		for(int i = 0; i < activity.view.renderer.colorValues.length; i++)
-//			if(activity.view.renderer.colorValues[i] > 0)
-//				activity.view.renderer.colorValues[i]-=10;
-		int j;
-		String index;
-		for(int n = 1; n < indices.length; n++){
-			index = indices[n];
-			j = Integer.parseInt(index);
-			activity.view.renderer.colorValues[j]+=80; 
-		}
-		
-	//	inString = "";
-		
-		
-	}
-
-	public void parseData(String inString, MainActivity activity){
-    	receiveValsString = inString.split(",");
-		Log.i(TAG, "Vals Received: " + receiveValsString[0] + "," + receiveValsString[1]  + "," + receiveValsString[2]  + "," + receiveValsString[3]  + "," + receiveValsString[4]  + "," + receiveValsString[5]);
-		for (int i=0; i < 9; i++) {
-			receiveVals[i] = Float.parseFloat(receiveValsString[i]);
-			Log.i(TAG, "FLOAT VALUE[" + i + "]: " + receiveVals[i]);
-		}
-		activity.view.renderer.setValues(receiveVals);
-		waitingToReceive = false;
-    }
     
     public void receiveMessageFromServer(MainActivity activity){
     	try {
-    		int bytesReceived;
 			if((bytesReceived = socket.getInputStream().read(inBuffer)) != 0){
 				
 				//set waiting to receive to false
-				if (activity.stage != MainActivity.RUN)
-					waitingToReceive = false;
+				waitingToReceive = false;
 				Log.i("BytesReceived", "" + bytesReceived);
 				//get the received string and tell the main thread its ready
 				inString = "";

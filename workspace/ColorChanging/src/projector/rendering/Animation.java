@@ -6,7 +6,7 @@ public class Animation {
 	boolean hasRotation = false;
 	boolean hasScale = false;
 	
-	int frames;
+	public int frames;
 	
 	//LOCATION DATA FOR XYZ
 	float[] xLocIn;

@@ -20,22 +20,25 @@ public class Object {
 	ByteBuffer indexBuffer;
 	//ByteBuffer tempIndex;
 	FloatBuffer textures;
-	boolean draw = false;
-	int texNum;
-	Animation a;
-	int aTimesToPlay;
-	float aDuration;
-	float aPoint;
-	float aFrameLength;
+	public boolean draw = false;
+	public int texNum;
+	public Animation a;
+	public int aTimesToPlay;
+	public float aDuration;
+	public float aPoint;
+	public float aFrameLength;
 	
-	int taTimesToPlay;
-	float taDuration;
-	float taPoint;
-	int[] taTextures;
-	float[] taLengths;
-	int taIndex;
+	public int taTimesToPlay;
+	public float taDuration;
+	public float taPoint;
+	public int[] taTextures;
+	public float[] taLengths;
+	public int taIndex;
 	public float z;
 	GLRenderer renderer;
+	
+	
+	
 	
 	public Object(int uid) {
 		this.uid = uid;
@@ -182,6 +185,9 @@ public class Object {
 	public void setRenderer(GLRenderer r){
 		renderer = r;
 	}
+	
+	
+	
 	
 
 }

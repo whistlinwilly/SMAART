@@ -26,8 +26,6 @@ public class MainActivity extends Activity {
 	public static final int RENDER_MAPPED = 2;
 	public static final int RUN = 3;
 	public static final int STOP = 4;
-	public static final int SUNRISE = 5;
-	public static final int STORM = 6;
 
 	public volatile GLView view;
 	public boolean mainGotMessage;
@@ -42,7 +40,7 @@ public class MainActivity extends Activity {
       
       //initialize things
       stage = -1;
-      netClient = new NetClient("10.0.1.2", 6881);
+      netClient = new NetClient("10.0.1.5", 6881);
       view = new GLView(this);
       view.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
 	  view.setKeepScreenOn(true);

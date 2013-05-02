@@ -32,6 +32,8 @@ import android.opengl.GLUtils;
 import android.os.Environment;
 import android.util.Log;
 
+
+
 public class GLRenderer implements GLSurfaceView.Renderer {
    private static final String TAG = "GLRenderer";
    private final Context context;
@@ -98,6 +100,8 @@ public class GLRenderer implements GLSurfaceView.Renderer {
    
    private float width = 0.0f;
    private float height = 0.0f;
+   
+   public NetClient netClient;
    public float eyeX = 0.0f;
    public float eyeY = 0.0f;
    public float eyeZ = 24.0f;
@@ -107,7 +111,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
    public float upX  = 0.0f;
    public float upY = 1.0f;
    public float upZ  = 0.0f;
-   public NetClient netClient;
+ 
    
    public float lightX = 0.0f;
    public float lightY = 0.0f;
@@ -386,104 +390,11 @@ private float alwaysFarPlane = 60.0f;
 	   
 	   }
 	   else if (mainActivity.stage == MainActivity.RUN){
-		   
-		      // Define the lighting
-		      float lightAmbient[] = new float[] { 0.1f, 0.1f, 0.1f, 1 };
-		      float lightDiffuse[] = new float[] { lightBrightness, lightBrightness, lightBrightness, 1 };
-		      float[] lightPos = new float[] { lightX, lightY, lightZ, 1 };
-		      gl.glEnable(GL10.GL_LIGHTING);
-		      gl.glEnable(GL10.GL_LIGHT0);
-		      gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_AMBIENT, lightAmbient, 0);
-		      gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_DIFFUSE, lightDiffuse, 0);
-		      gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_POSITION, lightPos, 0);
-		   
-		      if(lightStage == 0){
-		    	  lightY = (float) (-20 * Math.cos(lightTheta) - 10.0f);
-		    	  lightZ = (float) (30 * Math.sin(lightTheta));
-		    	  
-		    	  lightTheta += 0.005f;
-		    	  lightBrightness += 0.005f;
-		    	  
-		    	  if(lightTheta > 1.0f){
-		    		  lightStage = 1;
-		    		  mainActivity.playSound("birds.mp3");
-		    		  show(2);
-		    		  playAnimation(2, 1, 20, 20.0f);
-		    		  show(3);
-		    		  playAnimation(3, 1, 20, 18.0f);
-		    		  show(4);
-		    		  playAnimation(4, 1, 20, 22.0f);
-		    	  }
-		      }
-		      
-		      if(lightStage == 3){
-	    		  int textures[] = {2, 3, 2, 4, 2, 5};
-	    		float textureLengths[] = {0.2f, 0.2f, 0.2f, 0.2f, 0.2f};
-	    		  mainActivity.playSound("rain.mp3");
-	    		  playTextureAnimation(1, textures, textureLengths, 60, 1.0f);
-	    		  lightStage = 4;
-		      }
-		      
-		      if(lightStage == 2){
-		    	  lightBrightness -= 0.005f;
-		    	  
-		    	  if(lightBrightness < 0.6f && !stoopidBoolean){
-		    			int textures[] = {1, 0, 1, 0, 1};
-		    			float textureLengths[] = {0.2f, 0.1f, 0.2f, 0.1f, 0.4f};
-		    			hide(2);
-		    			hide(3);
-		    			hide(4);
-		    			mainActivity.playSound("thunder.mp3");
-		    			playTextureAnimation(0, textures, textureLengths, 2, 1.0f);
-		    			stoopidBoolean = true;
-		    	  }
-		    	  
-		    	  if(lightBrightness < 0.15f ){
-
-		    		  lightStage = 3;
-
-		    	  }
-		      }
-		      
-
-		      
-		   GLU.gluPerspective(gl, 17.0f, ratio, 0.1f, 1000f); 	      
-		   GLU.gluLookAt(gl, eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ);
-
-		   // Clear the screen to black
-		   gl.glClear(GL10.GL_COLOR_BUFFER_BIT
-				   | GL10.GL_DEPTH_BUFFER_BIT);
-
-		   // Position model so we can see it
-		   gl.glMatrixMode(GL10.GL_MODELVIEW);
-		   gl.glLoadIdentity();
-		   
-		      float matAmbient[] = new float[] { 1, 1, 1, 1 };
-		      float matDiffuse[] = new float[] { 1, 1, 1, 1 };
-		      gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_AMBIENT,
-		            matAmbient, 0);
-		      gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_DIFFUSE,
-		            matDiffuse, 0);
-      
-
-		      
-		   for(Object curObject: objects){
-			   curObject.updateAnimationValues(elapsedTime);
-			   if(curObject.draw){
-				   gl.glActiveTexture(GL10.GL_TEXTURE0 + curObject.texNum);
-				   gl.glClientActiveTexture(GL10.GL_TEXTURE0 + curObject.texNum);
-				   gl.glEnable(GL10.GL_TEXTURE_2D);
-				   gl.glBindTexture(GL10.GL_TEXTURE_2D, textures[curObject.texNum]);
-				   gl.glPushMatrix();
-				   
-				      gl.glTranslatef(curObject.x,curObject.y, curObject.z);
-				      gl.glRotatef(curObject.theta,0.0f,0.0f,1.0f);
-				      
-				   curObject.draw(gl);
-				   gl.glPopMatrix();
-				   gl.glDisable(GL10.GL_TEXTURE_2D);
-			   }
-		   }
+		   HouseDemo hd = new HouseDemo(lightBrightness, lightX, lightY, lightZ,
+				   						lightTheta, numAnimations, numObjects,
+				   						eyeX, eyeY, eyeZ, centerX, centerY, centerZ, 
+				   						upX, upY, upZ, elapsedTime);
+		   hd.run(gl, ratio, objects, animations, mainActivity, textures);
 	   }
       
       netClient.messageReady = false;
@@ -580,6 +491,7 @@ public void setValues(float[] vals){
 		return -1;  
 }
    
+  
    public void show(int objNum){
 	   Object obj;
 	   if(objNum < numObjects){
@@ -589,14 +501,6 @@ public void setValues(float[] vals){
 	   
    }
    
-   public void hide(int objNum){
-	   Object obj;
-	   if(objNum < numObjects){
-		   obj = objects.get(objNum);
-		   obj.draw = false;
-	   }
-	   
-   }
    
    public void setObjectTexture(int objNum, int texNum){
 	   Object obj;
@@ -606,34 +510,6 @@ public void setValues(float[] vals){
 	   }
    }
    
-
-   
-   public void playAnimation(int objNum, int aniNum, int times, float duration){
-	   Object obj;
-	   if(objNum < numObjects){
-		   if(aniNum < numAnimations){
-			   obj = objects.get(objNum);
-			   obj.a = animations.get(aniNum);
-			   obj.aDuration = duration;
-			   obj.aTimesToPlay = times;
-			   obj.aPoint = 0.0f;
-			   obj.aFrameLength = duration / (animations.get(aniNum).frames - 1);
-		   }
-	   }
-   }
-   
-   public void playTextureAnimation(int objNum, int[] textures, float[] textureLengths, int times, float duration){
-	   Object obj;
-	   if(objNum < numObjects){
-		   obj = objects.get(objNum);
-		   obj.taPoint = 0.0f;
-		   obj.taDuration = duration;
-		   obj.taIndex = 0;
-		   obj.taLengths = textureLengths;
-		   obj.taTextures = textures;
-		   obj.taTimesToPlay = times;
-	   }
-   }
    
    public boolean findProjector(Surface surface){
 		

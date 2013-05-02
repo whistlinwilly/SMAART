@@ -21,7 +21,7 @@ import org.xml.sax.SAXException;
 
 import projector.client.NetClient;
 import projector.main.MainActivity;
-
+import projector.applications.*;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -36,14 +36,19 @@ public class GLRenderer implements GLSurfaceView.Renderer {
    private static final String TAG = "GLRenderer";
    private final Context context;
    
+   //application enums
+   public static final int COLORCHANGING = 0;
+   public static final int HOUSE = 1;
+   public static final int ALEX = 2;
+   public volatile int application = -1;
+   
+   
+   
    private final GLCircle bigCircle = new GLCircle(0,0,2,100);
    private final GLCircle smallCircle = new GLCircle(0,3,0.5f,100);
    
    boolean stoopidBoolean = false;
    boolean sillyCodyBoolean = false;
-   
-   int numTriangles = 80;
-   public int[] colorValues = new int[numTriangles * numTriangles * 2];
    
  //North / West
    private final GLCircle circ00 = new GLCircle(0,0,0.5f,100);
@@ -78,8 +83,8 @@ public class GLRenderer implements GLSurfaceView.Renderer {
    private final GLCircle circn2n4 = new GLCircle(-2,-4,0.5f,100);
    private final GLCircle circn4n4 = new GLCircle(-4,-4,0.5f,100);
    
-   private long startTime;
-   private long elapsedTime;
+   public long startTime;
+   public long elapsedTime;
    
    private int numObjects = 0;
    
@@ -111,13 +116,6 @@ public class GLRenderer implements GLSurfaceView.Renderer {
    public float upZ  = 0.0f;
    public NetClient netClient;
    
-   public float lightX = 0.0f;
-   public float lightY = 0.0f;
-   public float lightZ = -20.0f;
-   public float lightBrightness = 0.0f;
-   public float lightTheta = 0.0f;
-   public volatile int lightStage = -1;
-   
    float theta = 0.0f;
    
    float animationPoint = 0.0f;
@@ -137,12 +135,11 @@ public class GLRenderer implements GLSurfaceView.Renderer {
    
    int thisProjector;
    ViewFrustrum[] projectors;
-private float alwaysFOV = 17.0f;
-private float alwaysNearPlane = 2.0f;
-private float alwaysFarPlane = 60.0f;
-private int globalColor;
+   private float alwaysFOV = 17.0f;
+   private float alwaysNearPlane = 2.0f;
+   private float alwaysFarPlane = 60.0f;
    
-	boolean perspectiveSet = false;
+   public boolean perspectiveSet = false;
    
 
    GLRenderer(Context context) {
@@ -294,14 +291,13 @@ private int globalColor;
    public void onDrawFrame(GL10 gl) {
 	   
 
-	      
+	  elapsedTime = System.currentTimeMillis() - startTime;
+	  startTime = System.currentTimeMillis();   
       
       gl.glMatrixMode(GL10.GL_PROJECTION);
       gl.glLoadIdentity();
       float ratio = (float) width / height;
       
-      elapsedTime = System.currentTimeMillis() - startTime;
-      startTime = System.currentTimeMillis();
       
       //Log.i("STAGE", "" + mainActivity.stage);
       
@@ -391,175 +387,25 @@ private int globalColor;
 	   }
 	   else if (mainActivity.stage == MainActivity.RUN){
 		   
-		   for(int i = 0; i < colorValues.length; i++)
-				if(colorValues[i] > 0)
-					colorValues[i] -= 110;
-				else 
-					colorValues[i] = 0;
+		   //all demo instantiations
+		   ColorChangingDemo colorChangingDemo = new ColorChangingDemo(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ, netClient);
+		   HouseDemo houseDemo = new HouseDemo(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, 
+												upX, upY, upZ, netClient);
 		   
-		   	gl.glDisable(GL10.GL_LIGHT0);
-		   	gl.glDisable(GL10.GL_LIGHTING);
-		//   	gl.glDisable(GL10.GL_TEXTURE_2D);
+		   //switch to tell when to run each demo
+		   if (this.application == COLORCHANGING)
+			   colorChangingDemo.run(gl, ratio, objects);
 		   
-			   GLU.gluPerspective(gl, 17.0f, ratio, 0.1f, 1000f); 	      
-			   GLU.gluLookAt(gl, eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ);
-	
-			   // Clear the screen to black
-			   gl.glClear(GL10.GL_COLOR_BUFFER_BIT
-					   | GL10.GL_DEPTH_BUFFER_BIT);
-	
-			   // Position model so we can see it
-			   gl.glMatrixMode(GL10.GL_MODELVIEW);
-			   gl.glLoadIdentity();
-			      
-			   
-			   float translationAmount = 19.875f / (numTriangles * 2);
-			   float translation = -9.9375f + translationAmount;
-			   
-			   gl.glTranslatef(translation, -translation, 0.0f);
-
-			   
-			   
-			   globalColor = 0;
-			   
-			   //vertical
-			   for(int i = 0; i < numTriangles; i++){
-				   gl.glPushMatrix();
-				   gl.glTranslatef(0.0f, -translationAmount * 2 * i, 0.0f);
-				   //horizontal
-				   for(int j = 0; j < numTriangles; j++){
-					   gl.glPushMatrix();
-					   gl.glTranslatef(translationAmount * 2 * j, 0.0f, 0.0f);
-					   gl.glScalef(1.0f / numTriangles, 1.0f / numTriangles, 1.0f);
-					   float[] colors = getColorModel(globalColor++);
-					   gl.glColor4f(colors[0], colors[1], colors[2], 1.0f);
-					   objects.get(0).draw(gl);
-
-					   colors = getColorModel(globalColor++);
-					   gl.glColor4f(colors[0], colors[1], colors[2], 1.0f);
-					   objects.get(1).draw(gl);
-					   
-					   gl.glPopMatrix();
-				   }
-				   gl.glPopMatrix();
-			   }
-			   
-		//	   gl.glEnable(GL10.GL_TEXTURE_2D);
-			   gl.glEnable(GL10.GL_LIGHTING);
-			   gl.glEnable(GL10.GL_LIGHT0);
-		      // Define the lighting
-//		      float lightAmbient[] = new float[] { 0.1f, 0.1f, 0.1f, 1 };
-//		      float lightDiffuse[] = new float[] { lightBrightness, lightBrightness, lightBrightness, 1 };
-//		      float[] lightPos = new float[] { lightX, lightY, lightZ, 1 };
-//		      gl.glEnable(GL10.GL_LIGHTING);
-//		      gl.glEnable(GL10.GL_LIGHT0);
-//		      gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_AMBIENT, lightAmbient, 0);
-//		      gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_DIFFUSE, lightDiffuse, 0);
-//		      gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_POSITION, lightPos, 0);
-//		   
-//		      if(lightStage == 0){
-//		    	  lightY = (float) (-20 * Math.cos(lightTheta) - 10.0f);
-//		    	  lightZ = (float) (30 * Math.sin(lightTheta));
-//		    	  
-//		    	  lightTheta += 0.005f;
-//		    	  lightBrightness += 0.005f;
-//		    	  
-//		    	  if(lightTheta > 1.0f){
-//		    		  lightStage = 1;
-//		    		  mainActivity.playSound("birds.mp3");
-//		    		  show(2);
-//		    		  playAnimation(2, 1, 20, 20.0f);
-//		    		  show(3);
-//		    		  playAnimation(3, 1, 20, 18.0f);
-//		    		  show(4);
-//		    		  playAnimation(4, 1, 20, 22.0f);
-//		    	  }
-//		      }
-//		      
-//		      if(lightStage == 3){
-//	    		  int textures[] = {2, 3, 2, 4, 2, 5};
-//	    		float textureLengths[] = {0.2f, 0.2f, 0.2f, 0.2f, 0.2f};
-//	    		  mainActivity.playSound("rain.mp3");
-//	    		  playTextureAnimation(1, textures, textureLengths, 60, 1.0f);
-//	    		  lightStage = 4;
-//		      }
-//		      
-//		      if(lightStage == 2){
-//		    	  lightBrightness -= 0.005f;
-//		    	  
-//		    	  if(lightBrightness < 0.6f && !stoopidBoolean){
-//		    			int textures[] = {1, 0, 1, 0, 1};
-//		    			float textureLengths[] = {0.2f, 0.1f, 0.2f, 0.1f, 0.4f};
-//		    			hide(2);
-//		    			hide(3);
-//		    			hide(4);
-//		    			mainActivity.playSound("thunder.mp3");
-//		    			playTextureAnimation(0, textures, textureLengths, 2, 1.0f);
-//		    			stoopidBoolean = true;
-//		    	  }
-//		    	  
-//		    	  if(lightBrightness < 0.15f ){
-//
-//		    		  lightStage = 3;
-//
-//		    	  }
-//		      }
-//		      
-//
-//		      
-//		   GLU.gluPerspective(gl, 17.0f, ratio, 0.1f, 1000f); 	      
-//		   GLU.gluLookAt(gl, eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ);
-//
-//		   // Clear the screen to black
-//		   gl.glClear(GL10.GL_COLOR_BUFFER_BIT
-//				   | GL10.GL_DEPTH_BUFFER_BIT);
-//
-//		   // Position model so we can see it
-//		   gl.glMatrixMode(GL10.GL_MODELVIEW);
-//		   gl.glLoadIdentity();
-//		   
-//		      float matAmbient[] = new float[] { 1, 1, 1, 1 };
-//		      float matDiffuse[] = new float[] { 1, 1, 1, 1 };
-//		      gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_AMBIENT,
-//		            matAmbient, 0);
-//		      gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_DIFFUSE,
-//		            matDiffuse, 0);
-//      
-//
-//		      
-//		   for(Object curObject: objects){
-//			   curObject.updateAnimationValues(elapsedTime);
-//			   if(curObject.draw){
-//				   gl.glActiveTexture(GL10.GL_TEXTURE0 + curObject.texNum);
-//				   gl.glClientActiveTexture(GL10.GL_TEXTURE0 + curObject.texNum);
-//				   gl.glEnable(GL10.GL_TEXTURE_2D);
-//				   gl.glBindTexture(GL10.GL_TEXTURE_2D, textures[curObject.texNum]);
-//				   gl.glPushMatrix();
-//				   
-//				      gl.glTranslatef(curObject.x,curObject.y, curObject.z);
-//				      gl.glRotatef(curObject.theta,0.0f,0.0f,1.0f);
-//				      
-//				   curObject.draw(gl);
-//				   gl.glPopMatrix();
-//				   gl.glDisable(GL10.GL_TEXTURE_2D);
-//			   }
-//		   }
+		   else if (this.application == HOUSE)
+			   houseDemo.run(gl, ratio, objects, animations, mainActivity, textures);
+		   
+		   //else if (this.application == ALEX)
+			   //alexDemo.run();
 	   }
       
       netClient.messageReady = false;
    }
    
-   private float[] getColorModel(int i) {
-	   float[] values = new float[3];
-	   float frequency = 0.008f;
-	   float red   = (((float)Math.sin(frequency*colorValues[i] + 0) * 1.0f) * 127.0f + 128.0f) / 255.0f;
-	   float green = (((float)Math.sin(frequency*colorValues[i] + 2) * 1.0f) * 127.0f + 128.0f) / 255.0f;
-	   float blue  = (((float)Math.sin(frequency*colorValues[i] + 4) * 1.0f) * 127.0f + 128.0f) / 255.0f;
-	   values[0] = red;
-	   values[1] = green;
-	   values[2] = blue;
-	   return values;
-}
 
 private void setProjector() {
 	   String[] temp = netClient.inString.split(",");
