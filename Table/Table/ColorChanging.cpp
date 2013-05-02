@@ -54,10 +54,10 @@ void ColorChanging::run(){
 		}
 		stringToSend = buildSendString();
 
-	for (int i=0; i<NUM_PROJECTORS; i++){
+		for (int i=0; i<NUM_PROJECTORS; i++){
 			appSn->sendToAll(stringToSend, strlen(stringToSend),i);
-			//appSn->receiveData(i, recvbuf);
 		}
+
 		blockedTriangles.erase(blockedTriangles.begin(), blockedTriangles.end());
 	}
 }	
