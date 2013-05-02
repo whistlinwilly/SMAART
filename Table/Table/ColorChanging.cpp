@@ -53,23 +53,11 @@ void ColorChanging::run(){
 			curSquare = curTriangle/2;
 		}
 		stringToSend = buildSendString();
-<<<<<<< Updated upstream
-		for (int i=0; i<NUM_PROJECTORS; i++){
+
+	for (int i=0; i<NUM_PROJECTORS; i++){
 			appSn->sendToAll(stringToSend, strlen(stringToSend),i);
 			//appSn->receiveData(i, recvbuf);
 		}
-=======
-
-		//this also includes receiveData which was commented out below
-		appSn->sendToAllReceive(stringToSend, strlen(stringToSend));
-
-
-	//	for (int i=0; i<NUM_PROJECTORS; i++){
-	//		appSn->sendToAll(stringToSend, strlen(stringToSend),i);
-	//		//appSn->receiveData(i, recvbuf);
-	//	}
->>>>>>> Stashed changes
-
 		blockedTriangles.erase(blockedTriangles.begin(), blockedTriangles.end());
 	}
 }	
@@ -102,11 +90,7 @@ char* ColorChanging::buildSendString(){
 	std::stringstream ss (std::stringstream::in | std::stringstream::out);
 	std::string s;
 	it = blockedTriangles.begin();
-<<<<<<< Updated upstream
-	s = "100";
-=======
 	s = "3";
->>>>>>> Stashed changes
 	s.append(",");
 	while (it != blockedTriangles.end()){
 		ss << *it;
