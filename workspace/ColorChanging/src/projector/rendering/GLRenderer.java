@@ -42,7 +42,25 @@ public class GLRenderer implements GLSurfaceView.Renderer {
    public static final int ALEX = 2;
    public volatile int application = -1;
    
+   //object enums
+   public int triangle1;
+   public int triangle2;
+   public int house;
+   public int bird;
+   public int grass;
+   public int path;
    
+   //texture enums
+   public int houseTex;
+   public int birdTex;
+   public int grassTex;
+   public int rainGrassTex1;
+   public int rainGrassTex2;
+   public int rainGrassTex3;
+   public int pathTex;
+   public int whiteTex;
+   public int blackTex;
+   public int birdAni;
    
    private final GLCircle bigCircle = new GLCircle(0,0,2,100);
    private final GLCircle smallCircle = new GLCircle(0,3,0.5f,100);
@@ -141,6 +159,9 @@ public class GLRenderer implements GLSurfaceView.Renderer {
    
    public boolean perspectiveSet = false;
    
+   //all demo instantiations
+   ColorChangingDemo colorChangingDemo;
+   HouseDemo houseDemo;
 
    GLRenderer(Context context) {
       this.context = context;
@@ -312,7 +333,13 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 		   //used to be 17.5
     	  
     	//  gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-    	  
+    	  float matAmbient[] = new float[] { 1, 1, 1, 1 };
+	      float matDiffuse[] = new float[] { 1, 1, 1, 1 };
+	      gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_AMBIENT,
+	            matAmbient, 0);
+	      gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_DIFFUSE,
+	            matDiffuse, 0);
+	      
 		   GLU.gluPerspective(gl, alwaysFOV, ratio, alwaysNearPlane, alwaysFarPlane); 
 		   GLU.gluLookAt(gl, eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ);
 		      // Clear the screen to black
@@ -330,6 +357,11 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 	   }
 	   else if(mainActivity.stage == MainActivity.RENDER_MAPPED){
 		   if (!perspectiveSet) setValues(parseData());
+		   
+		   //all demo instantiations
+		   colorChangingDemo = new ColorChangingDemo(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ, netClient);
+		   houseDemo = new HouseDemo(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ, netClient);
+		   
 		   GLU.gluPerspective(gl, 17.0f, ratio, 0.1f, 1000f); 
 		   GLU.gluLookAt(gl, eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ);
 		   gl.glClear(GL10.GL_COLOR_BUFFER_BIT
@@ -387,14 +419,9 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 	   }
 	   else if (mainActivity.stage == MainActivity.RUN){
 		   
-		   //all demo instantiations
-		   ColorChangingDemo colorChangingDemo = new ColorChangingDemo(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ, netClient);
-		   HouseDemo houseDemo = new HouseDemo(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, 
-												upX, upY, upZ, netClient);
-		   
 		   //switch to tell when to run each demo
 		   if (this.application == COLORCHANGING)
-			   colorChangingDemo.run(gl, ratio, objects);
+			   colorChangingDemo.run(gl, ratio, objects, mainActivity);
 		   
 		   else if (this.application == HOUSE)
 			   houseDemo.run(gl, ratio, objects, animations, mainActivity, textures);

@@ -69,6 +69,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="ColorChanging.h" />
     <ClInclude Include="DefinedObjects.h" />
+    <ClInclude Include="HouseDemo.h" />
     <ClInclude Include="ImageManip.h" />
     <ClInclude Include="Initialization.h" />
     <ClInclude Include="Mapper.h" />
@@ -80,6 +81,7 @@
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="ColorChanging.cpp" />
+    <ClCompile Include="HouseDemo.cpp" />
     <ClCompile Include="ImageManip.cpp" />
     <ClCompile Include="Initialization.cpp" />
     <ClCompile Include="main.cpp" />

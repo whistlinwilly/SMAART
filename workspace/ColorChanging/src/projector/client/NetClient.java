@@ -11,6 +11,8 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import javax.microedition.khronos.opengles.GL10;
+
 import projector.main.MainActivity;
 import projector.rendering.GLRenderer;
 
@@ -93,13 +95,41 @@ public class NetClient extends AsyncTask<MainActivity, MainActivity, MainActivit
     	
     	String[] slody = inString.split(",");
     	String commandString = slody[0];
+    	String application = "";
     	command = Integer.parseInt(commandString);
-    	
+    	if (slody.length > 1 && command == MainActivity.RUN){
+    		application = slody[1];
+    	}
     	Log.w("slody!", "" + slody[0] + "inString is" + inString);
     	
 
-    	
-    	if (command == MainActivity.STOP){
+    	//if we are running our current app
+		if (activity.stage == MainActivity.RUN){
+			
+			//run colorchanging demo
+			if (application.equals("colorChange")) activity.view.renderer.application = GLRenderer.COLORCHANGING;
+			
+			//run house demo
+			else if (application.equals("houseDemo00")) activity.view.renderer.application = GLRenderer.HOUSE;
+			
+			
+			//RUN INIT AGAIN
+			else if (application.equals("INIT")) {
+				activity.view.renderer.eyeX = 0.0f;
+				activity.view.renderer.eyeY = 0.0f;
+				activity.view.renderer.eyeZ = 24.0f;
+				activity.view.renderer.centerX = 0.0f;
+				activity.view.renderer.centerY = 0.0f;
+				activity.view.renderer.centerZ = 0.0f;
+				activity.view.renderer.upX = 0.0f;
+				activity.view.renderer.upY = 1.0f;
+				activity.view.renderer.upZ = 0.0f;
+				activity.view.renderer.perspectiveSet = false;
+				activity.stage = MainActivity.RENDER_CIRCLES;
+			}
+			
+		}
+		else if (command == MainActivity.STOP){
        		if (connected) {
     			Log.i(TAG, "Socket is closing...");
     			try {
@@ -115,33 +145,8 @@ public class NetClient extends AsyncTask<MainActivity, MainActivity, MainActivit
     		}
     	}
     	else {
-    		//run the app specified
+    		activity.view.renderer.application = -1;
     		activity.stage = command;
-    		if (command == MainActivity.RUN){
-    			
-    			//run colorchanging demo
-    			if (inString.substring(2, inString.length()).equals("colorChange")) activity.view.renderer.application = GLRenderer.COLORCHANGING;
-    			
-    			//run house demo
-    			else if (inString.substring(2, inString.length()).equals("houseDemo00")) activity.view.renderer.application = GLRenderer.HOUSE;
-    			
-    			
-    			//RUN INIT AGAIN
-    			else if (inString.substring(2, inString.length()).equals("INIT")) {
-    				activity.view.renderer.eyeX = 0.0f;
-    				activity.view.renderer.eyeY = 0.0f;
-    				activity.view.renderer.eyeZ = 24.0f;
-    				activity.view.renderer.centerX = 0.0f;
-    				activity.view.renderer.centerY = 0.0f;
-    				activity.view.renderer.centerZ = 0.0f;
-    				activity.view.renderer.upX = 0.0f;
-    				activity.view.renderer.upY = 1.0f;
-    				activity.view.renderer.upZ = 0.0f;
-    				activity.view.renderer.perspectiveSet = false;
-    				activity.stage = MainActivity.RENDER_CIRCLES;
-    			}
-    			
-    		}
     	}
     	
     	

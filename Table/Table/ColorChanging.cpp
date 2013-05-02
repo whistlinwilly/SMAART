@@ -27,10 +27,12 @@ ColorChanging::ColorChanging(Camera tCam, CameraPerspective tCp, ServerNetwork* 
 //This method scans the foreground image, finds where the pixels are black (covered by hand or object),
 //then sends info to projectors to render cool shit on the blocked area.
 void ColorChanging::run(){
+	int keyPressed;
 	recvbuf = new char[100];
 	std::list<int>::iterator it;
 	char* stringToSend;
 	int ret;
+	running = 1;
 	while (running){ 
 		curTriangle = 0;
 		curSquare = 0;
@@ -40,7 +42,8 @@ void ColorChanging::run(){
 		Mat test = Mat(appForeground);
 		namedWindow("Test", CV_WINDOW_AUTOSIZE);
 		imshow("Test", appForeground);
-		waitKey(10);
+		keyPressed = waitKey(10);
+		if (keyPressed == 115) running = 0;
 
 		while (curTriangle < NUM_TRIANGLES){
 			curTrianglePos = getCurTriangleCenter();
@@ -54,10 +57,7 @@ void ColorChanging::run(){
 		}
 		stringToSend = buildSendString();
 
-		for (int i=0; i<NUM_PROJECTORS; i++){
-			appSn->sendToAll(stringToSend, strlen(stringToSend),i);
-		}
-		//this also includes receiveData which was commented out below
+		
 		appSn->sendToAllReceive(stringToSend, strlen(stringToSend));
 
 		blockedTriangles.erase(blockedTriangles.begin(), blockedTriangles.end());

@@ -71,7 +71,7 @@ void Initialization::readInitPattern(int projNum, BackgroundSubtractorMOG2* BGsu
 	
 
 
- 	sn->sendToClient("1,",5,projNum);
+ 	sn->sendToClient("1,",2,projNum);
 	sn->receiveData(projNum,recvbuf);
 
 	waitKey(100);

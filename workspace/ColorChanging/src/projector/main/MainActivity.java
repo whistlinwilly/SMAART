@@ -89,25 +89,51 @@ public class MainActivity extends Activity {
    
    public void init(){
 	   
-	 int triangle1 = view.renderer.loadObject("tri1.obj");
-	 int triangle2 = view.renderer.loadObject("tri2.obj");
-	 view.renderer.setObjectTexture(triangle1, -1);
-	 view.renderer.setObjectTexture(triangle2, -1);
+	 view.renderer.triangle1 = view.renderer.loadObject("tri1.obj");
+	 view.renderer.triangle2 = view.renderer.loadObject("tri2.obj");
+	 view.renderer.bird = view.renderer.loadObject("bird.obj");
+	 view.renderer.house = view.renderer.loadObject("stuccohouse.obj");
+	 view.renderer.grass = view.renderer.loadObject("complexgrass.obj");
+	 view.renderer.path = view.renderer.loadObject("path.obj");
+	 view.renderer.birdTex = view.renderer.loadTexture("bird.bmp");
+	 view.renderer.houseTex = view.renderer.loadTexture("stuccosprite.bmp");
+	 view.renderer.grassTex = view.renderer.loadTexture("grass.bmp");
+	 view.renderer.rainGrassTex1 = view.renderer.loadTexture("raingrass.bmp");
+	 view.renderer.rainGrassTex2 = view.renderer.loadTexture("raingrass2.bmp");
+	 view.renderer.rainGrassTex3 = view.renderer.loadTexture("raingrass3.bmp");
+	 view.renderer.pathTex = view.renderer.loadTexture("brick.bmp");
+	 view.renderer.whiteTex = view.renderer.loadTexture("white.bmp");
+	 view.renderer.blackTex = view.renderer.loadTexture("black.bmp");
+	 view.renderer.birdAni = view.renderer.loadAnimation("birdani.dae");
+	 view.renderer.setObjectTexture(view.renderer.triangle1, -1);
+	 view.renderer.setObjectTexture(view.renderer.triangle2, -1);
    }
 
-public void playSound(String fileName){
-	if(mp.isPlaying()){
-		mp.stop();
-	}
-	try {
-		mp.reset();
-		mp.setDataSource(Environment.getExternalStorageDirectory() + "/Sounds/" + fileName);
-		mp.prepare();
-		mp.start();
-	} catch (Exception e){
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
-
-}
+   public void playSound(String fileName, boolean forceSound){
+	   if (forceSound){
+		   if(mp.isPlaying()){
+			   mp.stop();
+		   }
+		   try {
+			   mp.reset();
+			   mp.setDataSource(Environment.getExternalStorageDirectory() + "/Sounds/" + fileName);
+			   mp.prepare();
+			   mp.start();
+		   } catch (Exception e){
+			   // TODO Auto-generated catch block
+			   e.printStackTrace();
+		   }
+	   }
+	   else if (!mp.isPlaying()){
+		   try {
+			   mp.reset();
+			   mp.setDataSource(Environment.getExternalStorageDirectory() + "/Sounds/" + fileName);
+			   mp.prepare();
+			   mp.start();
+		   } catch (Exception e){
+			   // TODO Auto-generated catch block
+			   e.printStackTrace();
+		   }
+	   }
+   }
 }

@@ -46,7 +46,7 @@ public class HouseDemo {
 		int houseCommand = Integer.parseInt(netClient.inString.substring(2, netClient.inString.length()));
 		
 		if(houseCommand == SUNRISE){
-			mainActivity.playSound("rooster.mp3");
+			mainActivity.playSound("rooster.mp3", true);
 			lightStage = 0;
 			}
 		else if(houseCommand == STORM){
@@ -73,7 +73,7 @@ public class HouseDemo {
 			  
 			if(lightTheta > 1.0f){
 				lightStage = 1;
-				mainActivity.playSound("birds.mp3");
+				mainActivity.playSound("birds.mp3", true);
 				mainActivity.view.renderer.show(2);
 				mainActivity.view.renderer.playAnimation(2, 1, 20, 20.0f);
 				mainActivity.view.renderer.show(3);
@@ -86,7 +86,7 @@ public class HouseDemo {
 		if(lightStage == 3){
 			int textures[] = {2, 3, 2, 4, 2, 5};
 			float textureLengths[] = {0.2f, 0.2f, 0.2f, 0.2f, 0.2f};
-			mainActivity.playSound("rain.mp3");
+			mainActivity.playSound("rain.mp3", true);
 			mainActivity.view.renderer.playTextureAnimation(1, textures, textureLengths, 60, 1.0f);
 			lightStage = 4;
 		}
@@ -100,7 +100,7 @@ public class HouseDemo {
 				mainActivity.view.renderer.hide(2);
 				mainActivity.view.renderer.hide(3);
 				mainActivity.view.renderer.hide(4);
-				mainActivity.playSound("thunder.mp3");
+				mainActivity.playSound("thunder.mp3", true);
 				mainActivity.view.renderer.playTextureAnimation(0, textures, textureLengths, 2, 1.0f);
 				stoopidBoolean = true;
 			}

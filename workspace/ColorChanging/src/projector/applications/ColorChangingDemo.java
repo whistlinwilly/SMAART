@@ -6,6 +6,7 @@ import javax.microedition.khronos.opengles.GL10;
 
 import android.opengl.GLU;
 import projector.client.NetClient;
+import projector.main.MainActivity;
 import projector.rendering.Object;
 
 public class ColorChangingDemo{
@@ -33,7 +34,7 @@ public class ColorChangingDemo{
 		this.netClient = netClient;
 	}
 	
-	public void run(GL10 gl, float ratio, ArrayList<Object> objects){
+	public void run(GL10 gl, float ratio, ArrayList<Object> objects, MainActivity activity){
 	   
 		updateColorArray();
 	   	gl.glDisable(GL10.GL_LIGHT0);
@@ -72,11 +73,11 @@ public class ColorChangingDemo{
 				   gl.glScalef(1.0f / numTriangles, 1.0f / numTriangles, 1.0f);
 				   float[] colors = getColorModel(globalColor++);
 				   gl.glColor4f(colors[0], colors[1], colors[2], 1.0f);
-				   objects.get(0).draw(gl);
+				   objects.get(activity.view.renderer.triangle1).draw(gl);
 
 				   colors = getColorModel(globalColor++);
 				   gl.glColor4f(colors[0], colors[1], colors[2], 1.0f);
-				   objects.get(1).draw(gl);
+				   objects.get(activity.view.renderer.triangle2).draw(gl);
 				   
 				   gl.glPopMatrix();
 			   }
@@ -93,7 +94,7 @@ public class ColorChangingDemo{
 	// helper functions only referenced in RUN STAGE for color changing demo
 	private float[] getColorModel(int i) {
 		   float[] values = new float[3];
-		   float frequency = 0.008f;
+		   float frequency = 0.1f;
 		   float red   = (((float)Math.sin(frequency*colorValues[i] + 0) * 1.0f) * 127.0f + 128.0f) / 255.0f;
 		   float green = (((float)Math.sin(frequency*colorValues[i] + 2) * 1.0f) * 127.0f + 128.0f) / 255.0f;
 		   float blue  = (((float)Math.sin(frequency*colorValues[i] + 4) * 1.0f) * 127.0f + 128.0f) / 255.0f;
@@ -105,23 +106,21 @@ public class ColorChangingDemo{
 	
 	private void updateColorArray() {
 		String[] indices = netClient.inString.split(",");
+		if (indices.length == 1 || !indices[1].equals("colorChange")){
+			int j;
+			String index;
+			for(int n = 1; n < indices.length; n++){
+				index = indices[n];
+				j = Integer.parseInt(index);
+				this.colorValues[j]+= 20; 
+			}
 		
-//		for(int i = 0; i < activity.view.renderer.colorValues.length; i++)
-//			if(activity.view.renderer.colorValues[i] > 0)
-//				activity.view.renderer.colorValues[i]-=10;
-		int j;
-		String index;
-		for(int n = 1; n < indices.length; n++){
-			index = indices[n];
-			j = Integer.parseInt(index);
-			this.colorValues[j]+=80; 
+			for(int i = 0; i < colorValues.length; i++)
+				if(colorValues[i] > 0)
+					colorValues[i] -= 4;
+				else 
+					colorValues[i] = 0;
 		}
-		
-		for(int i = 0; i < colorValues.length; i++)
-			if(colorValues[i] > 0)
-				colorValues[i] -= 110;
-			else 
-				colorValues[i] = 0;
 		
 	//	inString = "";
 		
