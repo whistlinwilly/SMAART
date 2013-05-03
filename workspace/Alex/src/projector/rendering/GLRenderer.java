@@ -54,6 +54,11 @@ public class GLRenderer implements GLSurfaceView.Renderer {
    public int pHousekeeping;
    public int pSkylight;
    public int pAnimationShell;
+   public int siteMap;
+   public int siteBase;
+   
+   //animations
+   public int aSiteZoom;
    
    public int pFrame1;
    public int pFrame2;
@@ -87,6 +92,12 @@ public class GLRenderer implements GLSurfaceView.Renderer {
    public int pHousekeepingTex;
    public int pSkylightTex;
    public int blackTex;
+   public int siteTex;
+   public int siteHighlightTex;
+   public int siteBarsTex;
+   public int siteRiverTex;
+   public int siteStreetTex;
+   public int whiteTex;
    
    
    int numTriangles = 80;
@@ -190,6 +201,9 @@ private float alwaysFarPlane = 60.0f;
 private int globalColor;
    
 	boolean perspectiveSet = false;
+	private float globalScaleX = 1.0f;
+	private float globalScaleY = 1.0f;
+	private int scaleCounter = 0;
    
 
    GLRenderer(Context context) {
@@ -454,7 +468,20 @@ private int globalColor;
 		      gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_DIFFUSE, lightDiffuse, 0);
 		      gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_POSITION, lightPos, 0);
 		   
-		     
+			   if(mainActivity.stage == MainActivity.SITEMAPZOOM){
+				   if(scaleCounter  < 60){
+					   globalScaleX += 0.05f;
+					   globalScaleY += 0.05f;
+					   scaleCounter++;
+				   }
+			   }
+			   if(mainActivity.stage == MainActivity.MODELBASE){
+				   if(scaleCounter  > 0){
+					   globalScaleX -= 0.05f;
+					   globalScaleY -= 0.05f;
+					   scaleCounter--;
+				   }
+			   }
 		      
 
 		      
@@ -489,6 +516,7 @@ private int globalColor;
 				   
 				      gl.glTranslatef(curObject.x,curObject.y, curObject.z);
 				      gl.glRotatef(curObject.theta,0.0f,0.0f,1.0f);
+				      gl.glScalef(globalScaleX, globalScaleY, 1.0f);
 				      
 				   curObject.draw(gl);
 				   gl.glPopMatrix();

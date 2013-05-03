@@ -25,17 +25,26 @@ public class MainActivity extends Activity {
 	public static final int IDLE = 0;
 	public static final int RENDER_CIRCLES = 1;
 	public static final int RENDER_MAPPED = 2;
-	public static final int ALL = 3;
-	public static final int NONE = 4;
-	public static final int HEADHOUSE = 5;
-	public static final int CONTOURS = 6;
-	public static final int CICULATION = 7;
-	public static final int SINGLE = 8;
-	public static final int DOUBLE = 9;
-	public static final int TRIPLE = 10;
-	public static final int HOUSEKEEPING = 11;
-	public static final int SKYLIGHT = 12;
-	public static final int STOP = 13;
+	public static final int SITEMAP = 3;
+	public static final int SITEMAPHIGHLIGHTED = 4;
+	public static final int SITEMAPBARS = 5;
+	public static final int SITEMAPZOOM = 6;
+	public static final int SITEMAPRIVER = 7;
+	public static final int SITEMAPSTREET = 8;
+	public static final int MODELBASE = 9;
+	public static final int NONE = 10;
+	public static final int HEADHOUSE = 11;
+	public static final int CONTOURS = 12;
+	public static final int CICULATION = 13;
+	public static final int SINGLE = 14;
+	public static final int DOUBLE = 15;
+	public static final int TRIPLE = 16;
+	public static final int HOUSEKEEPING = 17;
+	public static final int SKYLIGHT = 18;
+	public static final int ANIMATION = 19;
+	public static final int MATERIALS = 20;
+	public static final int SUN = 21;
+	public static final int STOP = 22;
 
 	public volatile GLView view;
 	public boolean mainGotMessage;
@@ -101,7 +110,15 @@ public class MainActivity extends Activity {
 	   
 	   GLRenderer r = view.renderer;
 	   
+	   r.siteTex	=	r.loadTexture("site.bmp");
+	   r.siteHighlightTex = r.loadTexture("sitehighlight.bmp");
+	   r.siteBarsTex = r.loadTexture("sitebars.bmp");
+	   r.siteRiverTex = r.loadTexture("siteriver.bmp");
+	   r.siteStreetTex = r.loadTexture("siteroad.bmp");
+	   
 	   //load objects
+	   r.siteMap = r.loadObject("sitemap.obj");
+	   r.siteBase = r.loadObject("base.obj");
 	   r.pCirculation = r.loadObject("program_circulation.obj");
 	   r.pContours = r.loadObject("program_contours_small.obj");
 	   r.pDoubles = r.loadObject("program_double.obj");
@@ -111,6 +128,9 @@ public class MainActivity extends Activity {
 	   r.pSkylight = r.loadObject("program_skylight.obj");
 	   r.pTriples = r.loadObject("program_triple.obj");
 	   r.pAnimationShell = r.loadObject("aniSurface.obj");
+	   
+	   //load object animations
+	   r.aSiteZoom = r.loadAnimation("sitezoom2.dae");
 	   
 	   
 	   //load textures
@@ -123,6 +143,7 @@ public class MainActivity extends Activity {
 	   r.pSkylightTex = r.loadTexture("skylight.bmp");
 	   r.pTriplesTex = r.loadTexture("triple.bmp");
 	   r.blackTex	= r.loadTexture("black.bmp");
+	   r.whiteTex = r.loadTexture("white.bmp");
 	   
 	   //load frames for animation
 	   r.pFrame1 = r.loadTexture("Make2D--visible--lines--water-waterPath_row1_00000.bmp");
@@ -137,39 +158,46 @@ public class MainActivity extends Activity {
 	   r.pFrame10 = r.loadTexture("Make2D--visible--lines--water-waterPath_row1_00009.bmp");
 	   r.pFrame11 = r.loadTexture("Make2D--visible--lines--water-waterPath_row1_00010.bmp");
 	   
-	   if(r.pAnimationShell > 0){
+	   if(r.pAnimationShell >= 0){
 		   r.setObjectTexture(r.pAnimationShell, r.pFrame1);
 	   }
-	   if(r.pCirculation > 0){
-		   r.show(r.pCirculation);
+	   if(r.siteMap >= 0){
+		   r.show(r.siteMap);
+		   r.setObjectTexture(r.siteMap, r.siteTex);
+	   }
+	   if(r.siteBase >= 0){
+		   r.setObjectTexture(r.siteBase, r.whiteTex);
+	   }
+	   if(r.pCirculation >= 0){
+		  // r.show(r.pCirculation);
 		   r.setObjectTexture(r.pCirculation, r.pCirculationTex);
 	   }
-	   if(r.pContours > 0){
-		   r.show(r.pContours);
+	   if(r.pContours >= 0){
+		//   r.show(r.pContours);
 		   r.setObjectTexture(r.pContours, r.pContoursTex);
 	   }
-	   if(r.pDoubles > 0){
-		   r.show(r.pDoubles);
+	   if(r.pDoubles >= 0){
+		//   r.show(r.pDoubles);
 		   r.setObjectTexture(r.pDoubles, r.pDoublesTex);
 	   }
-	   if(r.pHeadHouse > 0){
-		   r.show(r.pHeadHouse);
+	   if(r.pHeadHouse >= 0){
+		//   r.show(r.pHeadHouse);
 		   r.setObjectTexture(r.pHeadHouse, r.pHeadHouseTex);
 	   }
-	   if(r.pHousekeeping > 0){
-		   r.show(r.pHousekeeping);
+	   if(r.pHousekeeping >= 0){
+		 //  r.show(r.pHousekeeping);
 		   r.setObjectTexture(r.pHousekeeping, r.pHousekeepingTex);
 	   }
-	   if(r.pSingles > 0){
-		   r.show(r.pSingles);
+	   if(r.pSingles >= 0){
+		 //  r.show(r.pSingles);
 		   r.setObjectTexture(r.pSingles, r.pSinglesTex);
 	   }
-	   if(r.pSkylight > 0){
-		   r.show(r.pSkylight);
+	   if(r.pSkylight >= 0){
+		//   r.show(r.pSkylight);
 		   r.setObjectTexture(r.pSkylight, r.pSkylightTex);
 	   }
-	   if(r.pTriples > 0){
-		   r.show(r.pTriples);
+	   if(r.pTriples >= 0){
+		 //  r.show(r.pTriples);
 		   r.setObjectTexture(r.pTriples, r.pTriplesTex);
 	   }
 	   

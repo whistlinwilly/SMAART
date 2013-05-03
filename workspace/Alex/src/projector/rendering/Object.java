@@ -15,6 +15,8 @@ public class Object {
 	public float x;
 	public float y;
 	public float theta;
+	public float scaleX;
+	public float scaleY;
 	Surface[] surfaces;
 	FloatBuffer vertices, normals;
 	ByteBuffer indexBuffer;
@@ -27,7 +29,6 @@ public class Object {
 	float aDuration;
 	float aPoint;
 	float aFrameLength;
-	
 	int taTimesToPlay;
 	float taDuration;
 	float taPoint;
@@ -39,12 +40,14 @@ public class Object {
 	
 	public Object(int uid) {
 		this.uid = uid;
-		aTimesToPlay = 0;
-		taTimesToPlay = 0;
+		aTimesToPlay = -1;
+		taTimesToPlay = -1;
 		taIndex = 0;
 		x = 0.0f;
 		y = 0.0f;
 		z = 0.0f;
+		scaleX = 1.0f;
+		scaleY = 1.0f;
 	      // Setup index-array buffer. Indices in byte.
 
 	}
@@ -77,11 +80,20 @@ public class Object {
 	      gl.glRotatef(a.valueAtTime(s, AnimationFactory.Z_ROT),0.0f,0.0f,1.0f);
 
 		}
+		
+		if(aTimesToPlay == 0){
+			
+			float s = (aDuration - 0.01f) / aFrameLength;
+			gl.glTranslatef(a.valueAtTime(s, AnimationFactory.X_LOC),a.valueAtTime(s, AnimationFactory.Y_LOC), 0.0f);
+		      gl.glRotatef(a.valueAtTime(s, AnimationFactory.X_ROT),1.0f,0.0f,0.0f);
+		      gl.glRotatef(a.valueAtTime(s, AnimationFactory.Y_ROT),0.0f,1.0f,0.0f);
+		      gl.glRotatef(a.valueAtTime(s, AnimationFactory.Z_ROT),0.0f,0.0f,1.0f);
+		}
 
 		
 		// Point to our buffers
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-		if(texNum > 0)
+		if(texNum >= 0)
 		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 		gl.glEnableClientState(GL10.GL_NORMAL_ARRAY);
 		
@@ -98,29 +110,29 @@ public class Object {
 	    	  
 	  		// Point to our buffers
 	  		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, surfaces[i].vertices);
-	  		if(texNum > 0)
+	  		if(texNum >= 0)
 	  		gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, surfaces[i].textures);
 	  		gl.glNormalPointer(GL10.GL_FLOAT, 0, surfaces[i].normals);
 	    	  
-	  		if(renderer.findProjector(surfaces[i]))
+	  		//if(renderer.findProjector(surfaces[i]))
 	    	  gl.glDrawElements(GL10.GL_TRIANGLES, 3, GL10.GL_UNSIGNED_BYTE, surfaces[i].index);
-	  		else{
-	  			   gl.glDisable(GL10.GL_TEXTURE_2D);
-				   gl.glActiveTexture(GL10.GL_TEXTURE0);
-				   gl.glClientActiveTexture(GL10.GL_TEXTURE0);
-				   gl.glEnable(GL10.GL_TEXTURE_2D);
-				   gl.glBindTexture(GL10.GL_TEXTURE_2D, renderer.textures[0]);
-				   gl.glDrawElements(GL10.GL_TRIANGLES, 3, GL10.GL_UNSIGNED_BYTE, surfaces[i].index);
-				   gl.glDisable(GL10.GL_TEXTURE_2D);
-				   gl.glActiveTexture(GL10.GL_TEXTURE0 + texNum);
-				   gl.glClientActiveTexture(GL10.GL_TEXTURE0 + texNum);
-				   gl.glEnable(GL10.GL_TEXTURE_2D);
-				   gl.glBindTexture(GL10.GL_TEXTURE_2D, renderer.textures[texNum]);
-	  		}
+//	  		else{
+//	  			   gl.glDisable(GL10.GL_TEXTURE_2D);
+//				   gl.glActiveTexture(GL10.GL_TEXTURE0);
+//				   gl.glClientActiveTexture(GL10.GL_TEXTURE0);
+//				   gl.glEnable(GL10.GL_TEXTURE_2D);
+//				   gl.glBindTexture(GL10.GL_TEXTURE_2D, renderer.textures[0]);
+//				   gl.glDrawElements(GL10.GL_TRIANGLES, 3, GL10.GL_UNSIGNED_BYTE, surfaces[i].index);
+//				   gl.glDisable(GL10.GL_TEXTURE_2D);
+//				   gl.glActiveTexture(GL10.GL_TEXTURE0 + texNum);
+//				   gl.glClientActiveTexture(GL10.GL_TEXTURE0 + texNum);
+//				   gl.glEnable(GL10.GL_TEXTURE_2D);
+//				   gl.glBindTexture(GL10.GL_TEXTURE_2D, renderer.textures[texNum]);
+//	  		}
 	      
 	      }
 	      gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
-	      if(texNum > 0)
+	      if(texNum >= 0)
 	     gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 	     gl.glDisableClientState(GL10.GL_NORMAL_ARRAY);
 

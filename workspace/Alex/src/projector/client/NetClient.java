@@ -118,7 +118,7 @@ public class NetClient extends AsyncTask<MainActivity, MainActivity, MainActivit
     		}
     	}
     	//stop this projector (should exit thread and close socket)
-    	else if(command == MainActivity.NONE){
+    	else if(command == MainActivity.ANIMATION){
     		
     		glr.hide(glr.pCirculation);
     		glr.hide(glr.pContours);
@@ -134,21 +134,12 @@ public class NetClient extends AsyncTask<MainActivity, MainActivity, MainActivit
     				glr.pFrame7, glr.pFrame8, glr.pFrame9, glr.pFrame10, glr.pFrame11
     		};
     		
-    		float[] durations = {1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f};
+    		float[] durations = {0.4f,0.4f,0.4f,0.4f,0.4f,0.4f,0.4f,0.4f,0.4f,0.4f,0.4f};
     		
     		glr.show(glr.pAnimationShell);
     		glr.playTextureAnimation(glr.pAnimationShell, testAni, durations, 20, 20.0f);
     	}
     	else if(command == MainActivity.HEADHOUSE){
-    		glr.hide(glr.pAnimationShell);
-    		glr.show(glr.pCirculation);
-    		glr.show(glr.pContours);
-    		glr.show(glr.pDoubles);
-    		glr.show(glr.pHeadHouse);
-    		glr.show(glr.pHousekeeping);
-    		glr.show(glr.pSingles);
-    		glr.show(glr.pSkylight);
-    		glr.show(glr.pTriples);
     		glr.setObjectTexture(glr.pCirculation, glr.blackTex);
     		glr.setObjectTexture(glr.pContours, glr.blackTex);
     		glr.setObjectTexture(glr.pDoubles, glr.blackTex);
@@ -157,14 +148,22 @@ public class NetClient extends AsyncTask<MainActivity, MainActivity, MainActivit
     		glr.setObjectTexture(glr.pSingles, glr.blackTex);
     		glr.setObjectTexture(glr.pTriples, glr.blackTex);
     		glr.setObjectTexture(glr.pSkylight, glr.blackTex);
+    		glr.show(glr.pCirculation);
+    		glr.show(glr.pContours);
+    		glr.show(glr.pDoubles);
+    		glr.show(glr.pHeadHouse);
+    		glr.show(glr.pHousekeeping);
+    		glr.show(glr.pSingles);
+    		glr.show(glr.pSkylight);
+    		glr.show(glr.pTriples);
     	}
     	else if(command == MainActivity.CICULATION){
     		glr.setObjectTexture(glr.pCirculation, glr.pCirculationTex);
     		glr.setObjectTexture(glr.pContours, glr.blackTex);
     	}
     	else if(command == MainActivity.CONTOURS){
-    		glr.setObjectTexture(glr.pContours, glr.pContoursTex);
     		glr.setObjectTexture(glr.pHeadHouse, glr.blackTex);
+    		glr.setObjectTexture(glr.pContours, glr.pContoursTex);
     	}
     	else if(command == MainActivity.DOUBLE){
     		glr.setObjectTexture(glr.pSingles, glr.blackTex);
@@ -186,6 +185,29 @@ public class NetClient extends AsyncTask<MainActivity, MainActivity, MainActivit
     		glr.setObjectTexture(glr.pHousekeeping, glr.pHousekeepingTex);
     		glr.setObjectTexture(glr.pTriples, glr.blackTex);
     	}
+    	else if(command == MainActivity.SITEMAPZOOM){
+    		glr.setObjectTexture(glr.siteMap, glr.siteTex);
+    		glr.playAnimation(glr.siteMap, glr.aSiteZoom, 1, 1.5f);
+    	}
+    	else if(command == MainActivity.SITEMAPHIGHLIGHTED){
+    		glr.setObjectTexture(glr.siteMap, glr.siteHighlightTex);
+    	}
+    	else if(command == MainActivity.SITEMAPBARS){
+    		glr.setObjectTexture(glr.siteMap, glr.siteBarsTex);
+    	}
+    	else if(command == MainActivity.SITEMAPRIVER){
+    		glr.setObjectTexture(glr.siteMap, glr.siteRiverTex);
+    	}
+    	else if(command == MainActivity.SITEMAPSTREET){
+    		glr.setObjectTexture(glr.siteMap, glr.siteStreetTex);
+    	}
+    	else if(command == MainActivity.MODELBASE){
+    		glr.hide(glr.siteMap);
+    		glr.show(glr.siteBase);
+    	}
+    	else if(command == MainActivity.NONE){
+    		glr.hide(glr.siteBase);
+    	}
     		
     		
     		
@@ -196,24 +218,7 @@ public class NetClient extends AsyncTask<MainActivity, MainActivity, MainActivit
     		
     }
 
-    private void updateColorArray(MainActivity activity) {
-		String[] indices = inString.split(",");
-		
-//		for(int i = 0; i < activity.view.renderer.colorValues.length; i++)
-//			if(activity.view.renderer.colorValues[i] > 0)
-//				activity.view.renderer.colorValues[i]-=10;
-		int j;
-		String index;
-		for(int n = 1; n < indices.length; n++){
-			index = indices[n];
-			j = Integer.parseInt(index);
-			activity.view.renderer.colorValues[j]+=80; 
-		}
-		
-	//	inString = "";
-		
-		
-	}
+
 
 	public void parseData(String inString, MainActivity activity){
     	receiveValsString = inString.split(",");

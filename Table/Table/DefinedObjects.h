@@ -1,6 +1,6 @@
 #include <opencv\cv.h>
 
-#define NUM_PROJECTORS (2)
+#define NUM_PROJECTORS (1)
 
 #define NUM_SQUARES (80)
 #define NUM_TRIANGLES (NUM_SQUARES * NUM_SQUARES * 2)
