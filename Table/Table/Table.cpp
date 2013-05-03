@@ -68,7 +68,7 @@ void Table::run(){
 				sn->sendToAllReceive("3,alexDemo", 10);
 				ad = new AlexDemo(sn);
 				break;
-			case 115: //pressed s
+			case 120: //pressed x
 				sn->sendToAllReceive("3,spaceDemo", 11);
 				break;
 			case 105://pressed i

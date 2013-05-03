@@ -150,6 +150,7 @@ public class MainActivity extends Activity {
 	   playSound("ding.mp3", true);
 	   
 	   //load frames for animation
+	   /*
 	   r.pFrame1 = r.loadTexture("Make2D--visible--lines--water-waterPath_row1_00000.bmp");
 	   r.pFrame2 = r.loadTexture("Make2D--visible--lines--water-waterPath_row1_00001.bmp");
 	   r.pFrame3 = r.loadTexture("Make2D--visible--lines--water-waterPath_row1_00002.bmp");
@@ -161,9 +162,11 @@ public class MainActivity extends Activity {
 	   r.pFrame9 = r.loadTexture("Make2D--visible--lines--water-waterPath_row1_00008.bmp");
 	   r.pFrame10 = r.loadTexture("Make2D--visible--lines--water-waterPath_row1_00009.bmp");
 	   r.pFrame11 = r.loadTexture("Make2D--visible--lines--water-waterPath_row1_00010.bmp");
+	   */
+	   r.loadAnimationTextures("Make2D--visible--lines--water-waterPath_row1_00000.bmp", 11);
 	   
 	   if(r.pAnimationShell >= 0){
-		   r.setObjectTexture(r.pAnimationShell, r.pFrame1);
+		   r.setObjectTexture(r.pAnimationShell, r.pframes[0]);
 	   }
 	   if(r.pCirculation >= 0){
 		   r.show(r.pCirculation);

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import javax.microedition.khronos.opengles.GL10;
 
 import android.opengl.GLU;
+import android.util.Log;
 
 import projector.client.NetClient;
 import projector.main.MainActivity;
@@ -23,6 +24,7 @@ public class AlexDemo{
 	private float lightBrightness = 0.0f;
 	private float lightTheta = 0.0f;
 	private GLRenderer glr;
+	String prevArg;
 	
 	public AlexDemo(float eyeX, float eyeY, float eyeZ, 
 			float centerX, float centerY, float centerZ, 
@@ -38,13 +40,14 @@ public class AlexDemo{
 		this.upY = upY;
 		this.upZ = upZ;
 		this.netClient = netClient;
+		prevArg = "";
 	}
 	
 	public void run(GL10 gl, float ratio, MainActivity activity){
 		glr = activity.view.renderer;
 		String[] args = netClient.inString.split(",");
 		always(gl, ratio);
-		if (args.length > 1 && !args[1].equals("alexDemo")){
+		if (args.length > 1 && !args[1].equals("alexDemo") && !args[1].equals(prevArg)){
 			if (args[1].equals("none")) showNone();
 			else if (args[1].equals("all")) showAll();
 			else if (args[1].equals("headhouse")) showHeadHouse();
@@ -55,6 +58,7 @@ public class AlexDemo{
 			else if (args[1].equals("triple")) showTriple();
 			else if (args[1].equals("housekeeping")) showHousekeeping();
 			else if (args[1].equals("skylight")) showSkylight();
+			prevArg = args[1];
 		}
 	}
 	
@@ -77,16 +81,16 @@ public class AlexDemo{
 		glr.hide(glr.pSingles);
 		glr.hide(glr.pSkylight);
 		glr.hide(glr.pTriples);
-		
-		
+		Log.i("SHOWNONE", "GOIN THROUGH");
+		/*
 		int[] testAni = {glr.pFrame1, glr.pFrame2, glr.pFrame3,glr.pFrame4,  glr.pFrame5,glr.pFrame6,
 				glr.pFrame7, glr.pFrame8, glr.pFrame9, glr.pFrame10, glr.pFrame11
 		};
-		
+		*/
 		float[] durations = {1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f};
 		
 		glr.show(glr.pAnimationShell);
-		glr.playTextureAnimation(glr.pAnimationShell, testAni, durations, 20, 20.0f);
+		glr.playTextureAnimation(glr.pAnimationShell, glr.pframes, durations, 20, 20.0f);
 	}
 	
 	public void showHeadHouse(){
@@ -101,8 +105,7 @@ public class AlexDemo{
 		glr.show(glr.pTriples);
 		glr.setObjectTexture(glr.pCirculation, glr.blackTex);
 		glr.setObjectTexture(glr.pContours, glr.blackTex);
-		glr.setObjectTexture(glr.pDoubles, glr.blackTex);
-		//glr.setObjectTexture(glr.pHeadHouse, glr.blackTex);
+		glr.setObjectTexture(glr.pDoubles, glr.blackTex); 
 		glr.setObjectTexture(glr.pHousekeeping, glr.blackTex);
 		glr.setObjectTexture(glr.pSingles, glr.blackTex);
 		glr.setObjectTexture(glr.pTriples, glr.blackTex);

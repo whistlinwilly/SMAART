@@ -46,7 +46,8 @@ public class GLRenderer implements GLSurfaceView.Renderer {
    public int pHousekeeping;
    public int pSkylight;
    public int pAnimationShell;
-   
+  
+   /*
    public int pFrame1;
    public int pFrame2;
    public int pFrame3;
@@ -68,6 +69,9 @@ public class GLRenderer implements GLSurfaceView.Renderer {
    public int pFrame19;
    public int pFrame20;
    public int pFrame21;
+   */
+   public int[] pframes;
+   
    
    //textures
    public int pCirculationTex;
@@ -479,13 +483,13 @@ public class GLRenderer implements GLSurfaceView.Renderer {
    }
    
 
-private void setProjector() {
+   private void setProjector() {
 	   String[] temp = netClient.inString.split(",");
 	   thisProjector = Integer.parseInt(temp[1]);
    }
 
 
-public void setValues(float[] vals){
+   public void setValues(float[] vals){
 	   if (vals != null && vals.length > 5){
 		   eyeX = vals[0];
 		   eyeY = vals[1];
@@ -498,6 +502,7 @@ public void setValues(float[] vals){
 		   upZ = vals[8];
 	   }
    }
+   
    
    public int loadTexture(String fileName){
 	   
@@ -537,6 +542,41 @@ public void setValues(float[] vals){
 		
 		return numTextures++;
    }
+   
+   
+   
+   public void loadAnimationTextures (String fileName, int numFrame) {
+	   int fileNameLen = fileName.length();
+	   String commonFileName = fileName.substring(0, fileNameLen - 9);
+	   this.pframes = new int[numFrame];
+	   
+	   for (int i = 0; i < numFrame; i ++) {
+		   String frameIndex = intToString(i);
+		   String tempFileName = commonFileName + frameIndex + ".bmp";
+		   this.pframes[i] =loadTexture(tempFileName);		   
+	   }
+	   return;
+   }
+   
+   
+   private String intToString(int num) {
+	   assert(num >= 0);
+	   if (num < 10) return new String("0000" + num);
+	   else if (num < 100) return new String("000" + num);
+	   else if (num < 1000) return new String("00" + num);
+	   else if (num < 10000) return Integer.valueOf(num).toString();
+	   else {
+		   assert(false);
+		   return new String("error");
+	   }
+	   
+   }
+   
+   
+   
+   
+   
+   
    
    public int loadObject(String fileName){
 	      try {

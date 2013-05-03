@@ -76,13 +76,11 @@ public class ObjectFactory {
 			//File is .obj file
 			if(fileName.contains(".obj")){
 				Scanner input = new Scanner(new File(Environment.getExternalStorageDirectory().getAbsolutePath() + dir,fileName));
-				Log.w("Object Factory", "Opened File, Beginning to Parse");
 				while(input.hasNextLine()){
 					if(input.hasNext(Pattern.compile("v"))){
 						if(!readingVertices){
 							readingVertices = true;
 							hasVertices = true;
-							Log.w("Object Factory", "Found Vertex Section, Now Parsing");
 						}
 						//input.useDelimiter(" ");
 						input.next();
@@ -94,11 +92,11 @@ public class ObjectFactory {
 						vertices.add(y);
 						vertices.add(z);
 						
-						Log.w("Object Factory", "Added new vertex (" + x + "," + y + "," + z + ")");
+						
 					}
 					else if(input.hasNext(Pattern.compile("vt"))){
 						if(!readingTextures && readingVertices){
-							Log.w("Object Factory", "Found Texture Section, Now Parsing");
+						
 							readingTextures = true;
 							hasTextures = true;
 						}
@@ -110,11 +108,10 @@ public class ObjectFactory {
 						textures.add(x);
 						textures.add(y);
 						
-						Log.w("Object Factory", "Added new texture vertex (" + x + "," + y + ")");
+						
 					}
 					else if(input.hasNext(Pattern.compile("vn"))){
 						if(!readingNormals && readingVertices){
-							Log.w("Object Factory", "Found Normal Section, Now Parsing");
 							readingNormals = true;
 							hasNormals = true;
 						}
@@ -128,11 +125,9 @@ public class ObjectFactory {
 						normals.add(y);
 						normals.add(z);
 						
-						Log.w("Object Factory", "Added new normal vertex (" + x + "," + y + "," + z + ")");
 					}
 					else if(input.hasNext(Pattern.compile("f"))){
 						if(!readingFaces){
-							Log.w("Object Factory", "Found Face Section, Now Parsing");
 							readingFaces = true;
 						}
 						
@@ -161,8 +156,6 @@ public class ObjectFactory {
 							textureIndex3 = Integer.parseInt(numbers[1]);
 						if(numbers[2].length() > 0)
 							normalIndex3 = Integer.parseInt(numbers[2]);
-						
-						Log.w("Object Factory", "Found New Tri Face " + vertexIndex1 + "/" + vertexIndex2 + "/" + vertexIndex3);
 						
 						vertexIndex1--;
 						vertexIndex2--;
@@ -321,7 +314,6 @@ public class ObjectFactory {
 							input.next();
 						}
 						else{
-							Log.w("Object Factory", "Found starting object!");
 							newObj = new Object(numObjects++);
 							input.next();
 						}
@@ -330,7 +322,6 @@ public class ObjectFactory {
 					}
 					else if(input.hasNext()){
 						lineIsThis = input.next();
-						Log.w("Object Factory", "GOT UNKNOWN LINE:" + lineIsThis);
 					}
 					else{
 						//OLD VERSION OF FACE PARSING

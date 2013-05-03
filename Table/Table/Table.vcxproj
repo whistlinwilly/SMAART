@@ -66,6 +66,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AlexDemo.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="ColorChanging.h" />
     <ClInclude Include="DefinedObjects.h" />
@@ -79,6 +80,7 @@
     <ClInclude Include="Tracker.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AlexDemo.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="ColorChanging.cpp" />
     <ClCompile Include="HouseDemo.cpp" />
