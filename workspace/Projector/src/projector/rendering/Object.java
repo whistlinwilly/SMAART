@@ -20,22 +20,25 @@ public class Object {
 	ByteBuffer indexBuffer;
 	//ByteBuffer tempIndex;
 	FloatBuffer textures;
-	boolean draw = false;
-	int texNum;
-	Animation a;
-	int aTimesToPlay;
-	float aDuration;
-	float aPoint;
-	float aFrameLength;
+	public boolean draw = false;
+	public int texNum;
+	public Animation a;
+	public int aTimesToPlay;
+	public float aDuration;
+	public float aPoint;
+	public float aFrameLength;
 	
-	int taTimesToPlay;
-	float taDuration;
-	float taPoint;
-	int[] taTextures;
-	float[] taLengths;
-	int taIndex;
+	public int taTimesToPlay;
+	public float taDuration;
+	public float taPoint;
+	public int[] taTextures;
+	public float[] taLengths;
+	public int taIndex;
 	public float z;
 	GLRenderer renderer;
+	
+	
+	
 	
 	public Object(int uid) {
 		this.uid = uid;
@@ -81,6 +84,7 @@ public class Object {
 		
 		// Point to our buffers
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+		if(texNum >= 0)
 		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 		gl.glEnableClientState(GL10.GL_NORMAL_ARRAY);
 		
@@ -97,6 +101,7 @@ public class Object {
 	    	  
 	  		// Point to our buffers
 	  		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, surfaces[i].vertices);
+	  		if(texNum >= 0)
 	  		gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, surfaces[i].textures);
 	  		gl.glNormalPointer(GL10.GL_FLOAT, 0, surfaces[i].normals);
 	    	  
@@ -118,6 +123,7 @@ public class Object {
 	      
 	      }
 	      gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+	      if(texNum >= 0)
 	     gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 	     gl.glDisableClientState(GL10.GL_NORMAL_ARRAY);
 
@@ -179,6 +185,9 @@ public class Object {
 	public void setRenderer(GLRenderer r){
 		renderer = r;
 	}
+	
+	
+	
 	
 
 }

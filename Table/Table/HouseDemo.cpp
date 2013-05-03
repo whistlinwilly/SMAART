@@ -14,18 +14,24 @@ HouseDemo::HouseDemo(ServerNetwork* tSn){
 }
 
 void HouseDemo::run(){
-	char keyPressed;
-	
+	int keyPressed;
+	running = 1;
+
 	while(running){
 		keyPressed = waitKey();
 		// signal to "rise"
-		if(keyPressed == 'r'){
+		if(keyPressed == 114){
 			appSn->sendToAllReceive("3,5", 3);	
 		}
 
-		// signal to "set"
-		if(keyPressed == 's'){
+		// signal to "storm"
+		else if(keyPressed == 116){
 			appSn->sendToAllReceive("3,6", 3);
+		}
+
+		//signal to stop
+		else if (keyPressed == 115){
+			running = 0;
 		}
 	}
 }

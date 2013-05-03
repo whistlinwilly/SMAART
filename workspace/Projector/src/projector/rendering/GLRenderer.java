@@ -21,7 +21,7 @@ import org.xml.sax.SAXException;
 
 import projector.client.NetClient;
 import projector.main.MainActivity;
-
+import projector.applications.*;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -32,18 +32,84 @@ import android.opengl.GLUtils;
 import android.os.Environment;
 import android.util.Log;
 
-
-
 public class GLRenderer implements GLSurfaceView.Renderer {
    private static final String TAG = "GLRenderer";
    private final Context context;
+   
+ //objects
+   public int pCirculation;
+   public int pContours;
+   public int pDoubles;
+   public int pSingles;
+   public int pTriples;
+   public int pHeadHouse;
+   public int pHousekeeping;
+   public int pSkylight;
+   public int pAnimationShell;
+   
+   public int pFrame1;
+   public int pFrame2;
+   public int pFrame3;
+   public int pFrame4;
+   public int pFrame5;
+   public int pFrame6;
+   public int pFrame7;
+   public int pFrame8;
+   public int pFrame9;
+   public int pFrame10;
+   public int pFrame11;
+   public int pFrame12;
+   public int pFrame13;
+   public int pFrame14;
+   public int pFrame15;
+   public int pFrame16;
+   public int pFrame17;
+   public int pFrame18;
+   public int pFrame19;
+   public int pFrame20;
+   public int pFrame21;
+   
+   //textures
+   public int pCirculationTex;
+   public int pContoursTex;
+   public int pDoublesTex;
+   public int pSinglesTex;
+   public int pTriplesTex;
+   public int pHeadHouseTex;
+   public int pHousekeepingTex;
+   public int pSkylightTex;
+   
+   //application enums
+   public static final int COLORCHANGING = 0;
+   public static final int HOUSE = 1;
+   public static final int ALEX = 2;
+   public volatile int application = -1;
+   
+   //object enums
+   public int triangle1;
+   public int triangle2;
+   public int house;
+   public int bird;
+   public int grass;
+   public int path;
+   
+   //texture enums
+   public int houseTex;
+   public int birdTex;
+   public int grassTex;
+   public int rainGrassTex1;
+   public int rainGrassTex2;
+   public int rainGrassTex3;
+   public int pathTex;
+   public int whiteTex;
+   public int blackTex;
+   public int birdAni;
    
    private final GLCircle bigCircle = new GLCircle(0,0,2,100);
    private final GLCircle smallCircle = new GLCircle(0,3,0.5f,100);
    
    boolean stoopidBoolean = false;
    boolean sillyCodyBoolean = false;
-   
    
  //North / West
    private final GLCircle circ00 = new GLCircle(0,0,0.5f,100);
@@ -78,8 +144,8 @@ public class GLRenderer implements GLSurfaceView.Renderer {
    private final GLCircle circn2n4 = new GLCircle(-2,-4,0.5f,100);
    private final GLCircle circn4n4 = new GLCircle(-4,-4,0.5f,100);
    
-   private long startTime;
-   private long elapsedTime;
+   public long startTime;
+   public long elapsedTime;
    
    private int numObjects = 0;
    
@@ -100,8 +166,6 @@ public class GLRenderer implements GLSurfaceView.Renderer {
    
    private float width = 0.0f;
    private float height = 0.0f;
-   
-   public NetClient netClient;
    public float eyeX = 0.0f;
    public float eyeY = 0.0f;
    public float eyeZ = 24.0f;
@@ -111,14 +175,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
    public float upX  = 0.0f;
    public float upY = 1.0f;
    public float upZ  = 0.0f;
- 
-   
-   public float lightX = 0.0f;
-   public float lightY = 0.0f;
-   public float lightZ = -20.0f;
-   public float lightBrightness = 0.0f;
-   public float lightTheta = 0.0f;
-   public volatile int lightStage = -1;
+   public NetClient netClient;
    
    float theta = 0.0f;
    
@@ -133,18 +190,23 @@ public class GLRenderer implements GLSurfaceView.Renderer {
    AnimationFactory ani = new AnimationFactory("/Animations");
 	
    /** The texture pointer */
-   public int[] textures = new int[10];
+   public int[] textures = new int[100];
    public MainActivity mainActivity;
    private int numAnimations = 0;
    
    int thisProjector;
    ViewFrustrum[] projectors;
-private float alwaysFOV = 17.0f;
-private float alwaysNearPlane = 2.0f;
-private float alwaysFarPlane = 60.0f;
+   private float alwaysFOV = 17.0f;
+   private float alwaysNearPlane = 2.0f;
+   private float alwaysFarPlane = 60.0f;
    
+   public boolean perspectiveSet = false;
    
-
+   //all demo instantiations
+   ColorChangingDemo colorChangingDemo;
+   HouseDemo houseDemo;
+   AlexDemo alexDemo;
+   
    GLRenderer(Context context) {
       this.context = context;
    }
@@ -195,7 +257,7 @@ private float alwaysFarPlane = 60.0f;
 				
 			}
 		
-		
+		perspectiveSet = true;
 		return receiveVals;
 	}
    
@@ -294,16 +356,15 @@ private float alwaysFarPlane = 60.0f;
    public void onDrawFrame(GL10 gl) {
 	   
 
-	      
+	  elapsedTime = System.currentTimeMillis() - startTime;
+	  startTime = System.currentTimeMillis();   
       
       gl.glMatrixMode(GL10.GL_PROJECTION);
       gl.glLoadIdentity();
       float ratio = (float) width / height;
       
-      elapsedTime = System.currentTimeMillis() - startTime;
-      startTime = System.currentTimeMillis();
       
-
+      //Log.i("STAGE", "" + mainActivity.stage);
       
       
       if(mainActivity.stage == MainActivity.IDLE || mainActivity.stage == MainActivity.RENDER_CIRCLES){
@@ -316,7 +377,13 @@ private float alwaysFarPlane = 60.0f;
 		   //used to be 17.5
     	  
     	//  gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-    	  
+    	  float matAmbient[] = new float[] { 1, 1, 1, 1 };
+	      float matDiffuse[] = new float[] { 1, 1, 1, 1 };
+	      gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_AMBIENT,
+	            matAmbient, 0);
+	      gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_DIFFUSE,
+	            matDiffuse, 0);
+	      
 		   GLU.gluPerspective(gl, alwaysFOV, ratio, alwaysNearPlane, alwaysFarPlane); 
 		   GLU.gluLookAt(gl, eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ);
 		      // Clear the screen to black
@@ -332,8 +399,14 @@ private float alwaysFarPlane = 60.0f;
 		      
 		   //   gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
 	   }
-	   else if(mainActivity.stage == MainActivity.RENDER_MAPPED || mainActivity.stage == MainActivity.FINAL_RENDERING){
-		   if (mainActivity.stage == MainActivity.RENDER_MAPPED) setValues(parseData());
+	   else if(mainActivity.stage == MainActivity.RENDER_MAPPED){
+		   if (!perspectiveSet) setValues(parseData());
+		   
+		   //all demo instantiations
+		   colorChangingDemo = new ColorChangingDemo(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ, netClient);
+		   houseDemo = new HouseDemo(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ, netClient);
+		   alexDemo = new AlexDemo(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ, netClient);
+		   
 		   GLU.gluPerspective(gl, 17.0f, ratio, 0.1f, 1000f); 
 		   GLU.gluLookAt(gl, eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ);
 		   gl.glClear(GL10.GL_COLOR_BUFFER_BIT
@@ -390,17 +463,23 @@ private float alwaysFarPlane = 60.0f;
 	   
 	   }
 	   else if (mainActivity.stage == MainActivity.RUN){
-		   HouseDemo hd = new HouseDemo(lightBrightness, lightX, lightY, lightZ,
-				   						lightTheta, numAnimations, numObjects,
-				   						eyeX, eyeY, eyeZ, centerX, centerY, centerZ, 
-				   						upX, upY, upZ, elapsedTime);
-		   hd.run(gl, ratio, objects, animations, mainActivity, textures);
+		   
+		   //switch to tell when to run each demo
+		   if (this.application == COLORCHANGING)
+			   colorChangingDemo.run(gl, ratio, objects, mainActivity);
+		   
+		   else if (this.application == HOUSE)
+			   houseDemo.run(gl, ratio, objects, animations, mainActivity, textures);
+		   
+		   else if (this.application == ALEX)
+			   alexDemo.run(gl, ratio, mainActivity);
 	   }
       
       netClient.messageReady = false;
    }
    
-   private void setProjector() {
+
+private void setProjector() {
 	   String[] temp = netClient.inString.split(",");
 	   thisProjector = Integer.parseInt(temp[1]);
    }
@@ -491,7 +570,6 @@ public void setValues(float[] vals){
 		return -1;  
 }
    
-  
    public void show(int objNum){
 	   Object obj;
 	   if(objNum < numObjects){
@@ -501,6 +579,14 @@ public void setValues(float[] vals){
 	   
    }
    
+   public void hide(int objNum){
+	   Object obj;
+	   if(objNum < numObjects){
+		   obj = objects.get(objNum);
+		   obj.draw = false;
+	   }
+	   
+   }
    
    public void setObjectTexture(int objNum, int texNum){
 	   Object obj;
@@ -510,6 +596,34 @@ public void setValues(float[] vals){
 	   }
    }
    
+
+   
+   public void playAnimation(int objNum, int aniNum, int times, float duration){
+	   Object obj;
+	   if(objNum < numObjects){
+		   if(aniNum < numAnimations){
+			   obj = objects.get(objNum);
+			   obj.a = animations.get(aniNum);
+			   obj.aDuration = duration;
+			   obj.aTimesToPlay = times;
+			   obj.aPoint = 0.0f;
+			   obj.aFrameLength = duration / (animations.get(aniNum).frames - 1);
+		   }
+	   }
+   }
+   
+   public void playTextureAnimation(int objNum, int[] textures, float[] textureLengths, int times, float duration){
+	   Object obj;
+	   if(objNum < numObjects){
+		   obj = objects.get(objNum);
+		   obj.taPoint = 0.0f;
+		   obj.taDuration = duration;
+		   obj.taIndex = 0;
+		   obj.taLengths = textureLengths;
+		   obj.taTextures = textures;
+		   obj.taTimesToPlay = times;
+	   }
+   }
    
    public boolean findProjector(Surface surface){
 		

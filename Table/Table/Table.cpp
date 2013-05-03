@@ -5,6 +5,7 @@
 #include "Table.h"
 #include "ColorChanging.h"
 #include "HouseDemo.h"
+#include "AlexDemo.h"
 
 Table::Table(char* ip, int port, int camNum){
 	sn = new ServerNetwork(ip, port);
@@ -44,10 +45,14 @@ void Table::run(){
 	//declare all demos
 	HouseDemo* hd;
 	ColorChanging* cc;
+	AlexDemo* ad;
+
 	int keyPressed;
 	while(1){
 		waitKey(500);
 		sn->sendToAllReceive("3,", 2);
+		waitKey(500);
+		sn->sendToAllReceive("3,CLEAR", 7);
 		keyPressed = waitKey();
 
 		switch(keyPressed){
@@ -56,14 +61,15 @@ void Table::run(){
 				cc = new ColorChanging(tCam, cp, sn);
 				break;
 			case 104: //pressed h
-				sn->sendToAllReceive("3,houseDemo00", 13);
+				sn->sendToAllReceive("3,houseDemo", 11);
 				hd = new HouseDemo(sn);
 				break;
 			case 97: //pressed a
-				sn->sendToAllReceive("3,alexDemo000", 13);
+				sn->sendToAllReceive("3,alexDemo", 10);
+				ad = new AlexDemo(sn);
 				break;
 			case 115: //pressed s
-				sn->sendToAllReceive("3,spaceDemo00", 13);
+				sn->sendToAllReceive("3,spaceDemo", 11);
 				break;
 			case 105://pressed i
 				sn->sendToAllReceive("3,INIT", 6);
@@ -77,6 +83,9 @@ void Table::run(){
 				}
 				tableInit->sendPerspectives(sn);
 				break;
+			case 113: //pressed q
+				sn->sendToAllReceive("3,QUIT", 6);
+				exit(0);
 			default:
 				break;
 		}

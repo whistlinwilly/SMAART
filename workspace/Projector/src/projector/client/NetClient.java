@@ -11,7 +11,10 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import javax.microedition.khronos.opengles.GL10;
+
 import projector.main.MainActivity;
+import projector.rendering.GLRenderer;
 
 import android.app.Activity;
 import android.content.Context;
@@ -25,7 +28,7 @@ public class NetClient extends AsyncTask<MainActivity, MainActivity, MainActivit
     /**
      * Maximum size of buffer
      */
-    public static final int BUFFER_SIZE = 100;
+    public static final int BUFFER_SIZE = 1000000;
     
     private static final String TAG = "NetClient";
 	   
@@ -33,9 +36,9 @@ public class NetClient extends AsyncTask<MainActivity, MainActivity, MainActivit
     public volatile Socket socket = null;
     public String host = null;
     public int port;
-    
+    public volatile int command;
     public boolean connected;
-    public byte[] inBuffer= new byte[1024];
+    public byte[] inBuffer = new byte[BUFFER_SIZE];
     public volatile String inString = null;
     public String outString;
     public byte[] outBuffer = new byte[1];
@@ -46,7 +49,8 @@ public class NetClient extends AsyncTask<MainActivity, MainActivity, MainActivit
     
     private float[] receiveVals = new float[10];
     private String[] receiveValsString;
-	
+	private int bytesReceived;
+	GLRenderer glr;
     /**
      * Constructor with Host, Port and MAC Address
      * @param host
@@ -73,6 +77,7 @@ public class NetClient extends AsyncTask<MainActivity, MainActivity, MainActivit
 	            
 	            if(socket != null){
 	            	connected = true;
+	            	glr = activity.view.renderer;
 	            	Log.i(TAG, "Socket Created");
 	            }
 	            
@@ -88,66 +93,90 @@ public class NetClient extends AsyncTask<MainActivity, MainActivity, MainActivit
     }
 
     
-    public void parseReceived(String inString, MainActivity activity){
-    	int command;
-    	String commandString = new String(inString.substring(0, 1));
+    public void parseReceived(MainActivity activity){
+    	
+    	String[] slody = inString.split(",");
+    	String commandString = slody[0];
+    	String application = "";
     	command = Integer.parseInt(commandString);
+    	if (slody.length > 1 && command == MainActivity.RUN){
+    		application = slody[1];
+    	}
+    	Log.w("slody!", "" + slody[0] + "inString is" + inString);
     	
 
-    	
-    	
-    	if (command == MainActivity.STOP){
-       		if (connected) {
-    			Log.i(TAG, "Socket is closing...");
-    			try {
-					socket.close();
-					isListening = false;
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-    		}
-    		else {
-    			Log.e(TAG, "Socket was already closed!");
-    		}
-    	}
-    	//stop this projector (should exit thread and close socket)
-    	else { 
-    		if(command == MainActivity.SUNRISE){
-    			activity.playSound("rooster.mp3");
-    			activity.view.renderer.lightStage = 0;
-    			}
-    		else if(command == MainActivity.STORM){
-    			activity.view.renderer.lightStage = 2;
-    		}
-    		else
-    			activity.stage = command;
-    	}
-    		
-    }
-
-    public void parseData(String inString, MainActivity activity){
-    	receiveValsString = inString.split(",");
-		Log.i(TAG, "Vals Received: " + receiveValsString[0] + "," + receiveValsString[1]  + "," + receiveValsString[2]  + "," + receiveValsString[3]  + "," + receiveValsString[4]  + "," + receiveValsString[5]);
-		for (int i=0; i < 9; i++) {
-			receiveVals[i] = Float.parseFloat(receiveValsString[i]);
-			Log.i(TAG, "FLOAT VALUE[" + i + "]: " + receiveVals[i]);
+    	//if we are running our current app
+		if (activity.stage == MainActivity.RUN){
+			
+			//run colorchanging demo
+			if (application.equals("colorChange")) glr.application = GLRenderer.COLORCHANGING;
+			
+			//run house demo
+			else if (application.equals("houseDemo")) glr.application = GLRenderer.HOUSE;
+			
+			//run alex demo
+			else if (application.equals("alexDemo")) glr.application = GLRenderer.ALEX;
+			
+			//RUN INIT AGAIN
+			else if (application.equals("INIT")) {
+				glr.eyeX = 0.0f;
+				glr.eyeY = 0.0f;
+				glr.eyeZ = 24.0f;
+				glr.centerX = 0.0f;
+				glr.centerY = 0.0f;
+				glr.centerZ = 0.0f;
+				glr.upX = 0.0f;
+				glr.upY = 1.0f;
+				glr.upZ = 0.0f;
+				glr.perspectiveSet = false;
+				activity.stage = MainActivity.RENDER_CIRCLES;
+			}
+			
+			//QUIT EVERYTHING
+			else if (application.equals("QUIT")){
+	       		if (connected) {
+	    			Log.i(TAG, "Socket is closing...");
+	    			try {
+						socket.close();
+						isListening = false;
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+	    		}
+	    		else {
+	    			Log.e(TAG, "Socket was already closed!");
+	    		}
+	       		System.exit(0);
+	    	}
+			
+			//CLEAR CURRENT APPLICATION
+			else if (application.equals("CLEAR")){
+				glr.application = -1;
+			}
+			
 		}
-		activity.view.renderer.setValues(receiveVals);
-		waitingToReceive = false;
+    	else {
+    		glr.application = -1;
+    		activity.stage = command;
+    	}
+    	
+    	
+    		
     }
     
     public void receiveMessageFromServer(MainActivity activity){
     	try {
-			if(socket.getInputStream().read(inBuffer) != 0){
+			if((bytesReceived = socket.getInputStream().read(inBuffer)) != 0){
 				
 				//set waiting to receive to false
 				waitingToReceive = false;
-				
+				Log.i("BytesReceived", "" + bytesReceived);
 				//get the received string and tell the main thread its ready
-				inString = new String(inBuffer, 0, inBuffer.length);
-				parseReceived(inString, activity);
+				inString = "";
+				inString = new String(inBuffer, 0, bytesReceived);
 				
+				parseReceived(activity);
 			}
 			else {
 				Log.i(TAG, "Waiting on message...");
