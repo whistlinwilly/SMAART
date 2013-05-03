@@ -94,7 +94,7 @@ public class ObjectFactory {
 						vertices.add(y);
 						vertices.add(z);
 						
-						Log.w("Object Factory", "Added new vertex (" + x + "," + y + "," + z + ")");
+					//	Log.w("Object Factory", "Added new vertex (" + x + "," + y + "," + z + ")");
 					}
 					else if(input.hasNext(Pattern.compile("vt"))){
 						if(!readingTextures && readingVertices){
@@ -110,7 +110,7 @@ public class ObjectFactory {
 						textures.add(x);
 						textures.add(y);
 						
-						Log.w("Object Factory", "Added new texture vertex (" + x + "," + y + ")");
+					//	Log.w("Object Factory", "Added new texture vertex (" + x + "," + y + ")");
 					}
 					else if(input.hasNext(Pattern.compile("vn"))){
 						if(!readingNormals && readingVertices){
@@ -128,7 +128,7 @@ public class ObjectFactory {
 						normals.add(y);
 						normals.add(z);
 						
-						Log.w("Object Factory", "Added new normal vertex (" + x + "," + y + "," + z + ")");
+				//		Log.w("Object Factory", "Added new normal vertex (" + x + "," + y + "," + z + ")");
 					}
 					else if(input.hasNext(Pattern.compile("f"))){
 						if(!readingFaces){
@@ -162,7 +162,7 @@ public class ObjectFactory {
 						if(numbers[2].length() > 0)
 							normalIndex3 = Integer.parseInt(numbers[2]);
 						
-						Log.w("Object Factory", "Found New Tri Face " + vertexIndex1 + "/" + vertexIndex2 + "/" + vertexIndex3);
+			//			Log.w("Object Factory", "Found New Tri Face " + vertexIndex1 + "/" + vertexIndex2 + "/" + vertexIndex3);
 						
 						vertexIndex1--;
 						vertexIndex2--;

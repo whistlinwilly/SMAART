@@ -27,8 +27,7 @@ void Table::initialize(){
 	frame = tCam.grabFrameWithPerspective(cp);
 	tableBGsub->operator()(frame, foreground, 0.001);
 
-	//read init pattern for each projector
-	for (int i=0; i<NUM_PROJECTORS; i++){
+		for (int i=0; i<NUM_PROJECTORS; i++){
 		tableInit->readInitPattern(i, tableBGsub, tCam, sn);
 		tableInit->computePerspective(i, sn);
 		sn->sendToAll("0,", 2, i);
@@ -79,70 +78,70 @@ void Table::initialize(){
 	sn->sendToAll("9,",2,1);
 	sn->receiveData(1,recvbuf);
 
-	sn->sendToAll("10,",2,0);
+	sn->sendToAll("10,",3,0);
 	sn->receiveData(0, recvbuf);
 
-	sn->sendToAll("10,",2,1);
+	sn->sendToAll("10,",3,1);
 	sn->receiveData(1,recvbuf);
 
-	sn->sendToAll("11,",2,0);
+	sn->sendToAll("11,",3,0);
 	sn->receiveData(0, recvbuf);
 
-	sn->sendToAll("11,",2,1);
+	sn->sendToAll("11,",3,1);
 	sn->receiveData(1,recvbuf);
 
-	sn->sendToAll("12,",2,0);
+	sn->sendToAll("12,",3,0);
 	sn->receiveData(0, recvbuf);
 
-	sn->sendToAll("12,",2,1);
+	sn->sendToAll("12,",3,1);
 	sn->receiveData(1,recvbuf);
 
-	sn->sendToAll("13,",2,0);
+	sn->sendToAll("13,",3,0);
 	sn->receiveData(0, recvbuf);
 
-	sn->sendToAll("13,",2,1);
+	sn->sendToAll("13,",3,1);
 	sn->receiveData(1,recvbuf);
 
-	sn->sendToAll("14,",2,0);
+	sn->sendToAll("14,",3,0);
 	sn->receiveData(0, recvbuf);
 
-	sn->sendToAll("14,",2,1);
+	sn->sendToAll("14,",3,1);
 	sn->receiveData(1,recvbuf);
 
-	sn->sendToAll("15,",2,0);
+	sn->sendToAll("15,",3,0);
 	sn->receiveData(0, recvbuf);
 
-	sn->sendToAll("15,",2,1);
+	sn->sendToAll("15,",3,1);
 	sn->receiveData(1,recvbuf);
 
-	sn->sendToAll("16,",2,0);
+	sn->sendToAll("16,",3,0);
 	sn->receiveData(0, recvbuf);
 
-	sn->sendToAll("16,",2,1);
+	sn->sendToAll("16,",3,1);
 	sn->receiveData(1,recvbuf);
 
-	sn->sendToAll("17,",2,0);
+	sn->sendToAll("17,",3,0);
 	sn->receiveData(0, recvbuf);
 
-	sn->sendToAll("17,",2,1);
+	sn->sendToAll("17,",3,1);
 	sn->receiveData(1,recvbuf);
 
-	sn->sendToAll("18,",2,0);
+	sn->sendToAll("18,",3,0);
 	sn->receiveData(0, recvbuf);
 
-	sn->sendToAll("18,",2,1);
+	sn->sendToAll("18,",3,1);
 	sn->receiveData(1,recvbuf);
 
-	sn->sendToAll("19,",2,0);
+	sn->sendToAll("19,",3,0);
 	sn->receiveData(0, recvbuf);
 
-	sn->sendToAll("19,",2,1);
+	sn->sendToAll("19,",3,1);
 	sn->receiveData(1,recvbuf);
 
-	sn->sendToAll("20,",2,0);
+	sn->sendToAll("20,",3,0);
 	sn->receiveData(0, recvbuf);
 
-	sn->sendToAll("20,",2,1);
+	sn->sendToAll("20,",3,1);
 	sn->receiveData(1,recvbuf);
 
 	//CODE BELOW FOR STUCCO HOUSE

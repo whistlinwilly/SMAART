@@ -131,10 +131,10 @@ public class NetClient extends AsyncTask<MainActivity, MainActivity, MainActivit
     		
     		
     		int[] testAni = {glr.pFrame1, glr.pFrame2, glr.pFrame3,glr.pFrame4,  glr.pFrame5,glr.pFrame6,
-    				glr.pFrame7, glr.pFrame8, glr.pFrame9, glr.pFrame10, glr.pFrame11
+    				glr.pFrame7, glr.pFrame8, glr.pFrame9, glr.pFrame10, glr.pFrame11, glr.pFrame12, glr.pFrame13, glr.pFrame14, glr.pFrame15, glr.pFrame16
     		};
     		
-    		float[] durations = {0.4f,0.4f,0.4f,0.4f,0.4f,0.4f,0.4f,0.4f,0.4f,0.4f,0.4f};
+    		float[] durations = {0.4f,0.4f,0.4f,0.4f,0.4f,0.4f,0.4f,0.4f,0.4f,0.4f,0.4f,0.4f,0.4f,0.4f,0.4f};
     		
     		glr.show(glr.pAnimationShell);
     		glr.playTextureAnimation(glr.pAnimationShell, testAni, durations, 20, 20.0f);
@@ -158,8 +158,8 @@ public class NetClient extends AsyncTask<MainActivity, MainActivity, MainActivit
     		glr.show(glr.pTriples);
     	}
     	else if(command == MainActivity.CICULATION){
-    		glr.setObjectTexture(glr.pCirculation, glr.pCirculationTex);
     		glr.setObjectTexture(glr.pContours, glr.blackTex);
+    		glr.setObjectTexture(glr.pCirculation, glr.pCirculationTex);
     	}
     	else if(command == MainActivity.CONTOURS){
     		glr.setObjectTexture(glr.pHeadHouse, glr.blackTex);
@@ -174,16 +174,16 @@ public class NetClient extends AsyncTask<MainActivity, MainActivity, MainActivit
     		glr.setObjectTexture(glr.pSingles, glr.pSinglesTex);
     	}
     	else if(command == MainActivity.SKYLIGHT){
-    		glr.setObjectTexture(glr.pSkylight, glr.pSkylightTex);
     		glr.setObjectTexture(glr.pHousekeeping, glr.blackTex);
+    		glr.setObjectTexture(glr.pSkylight, glr.pSkylightTex);
     	}
     	else if(command == MainActivity.TRIPLE){
-    		glr.setObjectTexture(glr.pTriples, glr.pTriplesTex);
     		glr.setObjectTexture(glr.pDoubles, glr.blackTex);
+    		glr.setObjectTexture(glr.pTriples, glr.pTriplesTex);
     	}
     	else if(command == MainActivity.HOUSEKEEPING){
-    		glr.setObjectTexture(glr.pHousekeeping, glr.pHousekeepingTex);
     		glr.setObjectTexture(glr.pTriples, glr.blackTex);
+    		glr.setObjectTexture(glr.pHousekeeping, glr.pHousekeepingTex);
     	}
     	else if(command == MainActivity.SITEMAPZOOM){
     		glr.setObjectTexture(glr.siteMap, glr.siteTex);
@@ -210,28 +210,41 @@ public class NetClient extends AsyncTask<MainActivity, MainActivity, MainActivit
     	}
     	else if(command == MainActivity.MATERIALS){
     		glr.hide(glr.pAnimationShell);
-    		glr.show(glr.pCirculation);
-    		glr.show(glr.pContours);
-    		glr.show(glr.pDoubles);
-    		glr.show(glr.pHeadHouse);
-    		glr.show(glr.pHousekeeping);
-    		glr.show(glr.pSingles);
-    		glr.show(glr.pSkylight);
-    		glr.show(glr.pTriples);
-		   glr.setObjectTexture(glr.pContours, glr.pContoursTex);
- 		   glr.setObjectTexture(glr.pDoubles, glr.pDoublesTex);
- 		   glr.setObjectTexture(glr.pHeadHouse, glr.pHeadHouseTex);
- 		   glr.setObjectTexture(glr.pHousekeeping, glr.pHousekeepingTex);
- 		   glr.setObjectTexture(glr.pSingles, glr.pSinglesTex);
- 		   glr.setObjectTexture(glr.pSkylight, glr.pSkylightTex);
- 		   glr.setObjectTexture(glr.pTriples, glr.pTriplesTex);
- 		  glr.setObjectTexture(glr.pCirculation, glr.pCirculationTex);
+		   glr.setObjectTexture(glr.pContours, glr.greyTex);
+ 		   glr.setObjectTexture(glr.pDoubles, glr.greyTex);
+ 		   glr.setObjectTexture(glr.pHeadHouse, glr.greyTex);
+ 		   glr.setObjectTexture(glr.pHousekeeping, glr.greyTex);
+ 		   glr.setObjectTexture(glr.pSingles, glr.greyTex);
+ 		   glr.setObjectTexture(glr.pSkylight, glr.greyTex);
+ 		   glr.setObjectTexture(glr.pTriples, glr.greyTex);
+ 		  glr.setObjectTexture(glr.pCirculation, glr.greyTex);
+  		glr.show(glr.pCirculation);
+  		glr.show(glr.pContours);
+  		glr.show(glr.pDoubles);
+  		glr.show(glr.pHeadHouse);
+  		glr.show(glr.pHousekeeping);
+  		glr.show(glr.pSingles);
+  		glr.show(glr.pSkylight);
+  		glr.show(glr.pTriples);
+    	}
+    	else if(command == MainActivity.REINIT){
+    		glr.eyeX = 0.0f;
+    		glr.eyeY = 0.0f;
+    		glr.eyeZ = 24.0f;
+    		glr.centerX = 0.0f;
+    		glr.centerY = 0.0f;
+    		glr.centerZ = 0.0f;
+    		glr.upX = 0.0f;
+    		glr.upY = 1.0f;
+    		glr.upZ = 0.0f;
+    		glr.perspectiveSet = false;
+    		activity.stage = MainActivity.RENDER_CIRCLES;
     	}
     		
     		
     		
-    		
-    		activity.stage = command;
+    		if(command != MainActivity.REINIT)
+    			activity.stage = command;
     	
     	
     		

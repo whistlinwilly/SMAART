@@ -65,6 +65,20 @@ public class GLRenderer implements GLSurfaceView.Renderer {
    public int siteMap;
    public int siteBase;
    
+   public int awnings;
+   public int glazing;
+   public int grass;
+   public int contours;
+   public int rooms;
+   public int skylights;
+   
+   public int awnTex;
+   public int glazTex;
+   public int grassTex;
+   public int contoursTex;
+   public int roomTex;
+   public int skylightTex;
+   
    //animations
    public int aSiteZoom;
    
@@ -84,11 +98,6 @@ public class GLRenderer implements GLSurfaceView.Renderer {
    public int pFrame14;
    public int pFrame15;
    public int pFrame16;
-   public int pFrame17;
-   public int pFrame18;
-   public int pFrame19;
-   public int pFrame20;
-   public int pFrame21;
    
    //textures
    public int pCirculationTex;
@@ -106,6 +115,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
    public int siteRiverTex;
    public int siteStreetTex;
    public int whiteTex;
+   public int greyTex;
    
    
    int numTriangles = 80;
@@ -208,7 +218,7 @@ private float alwaysNearPlane = 2.0f;
 private float alwaysFarPlane = 60.0f;
 private int globalColor;
    
-	boolean perspectiveSet = false;
+	public boolean perspectiveSet = false;
 	private float globalScaleX = 1.0f;
 	private float globalScaleY = 1.0f;
 	private int scaleCounter = 0;
@@ -392,6 +402,13 @@ private int globalColor;
     	  
     	//  gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
     	  
+	      float matAmbient[] = new float[] { 1, 1, 1, 1 };
+	      float matDiffuse[] = new float[] { 1, 1, 1, 1 };
+	      gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_AMBIENT,
+	            matAmbient, 0);
+	      gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_DIFFUSE,
+	            matDiffuse, 0);
+    	  
 		   GLU.gluPerspective(gl, alwaysFOV, ratio, alwaysNearPlane, alwaysFarPlane); 
 		   GLU.gluLookAt(gl, eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ);
 		      // Clear the screen to black
@@ -474,15 +491,15 @@ private int globalColor;
 			   
 			   
 			   if(lightCounter > 10){
-			   		  lightAmbient = new float[]{0.2f, 0.2f, 0.2f, 1 };
+			   		  lightAmbient = new float[]{0.05f, 0.05f, 0.05f, 1 };
 				      lightDiffuse = new float[] { 1.0f, 1.0f, 1.0f, 1 };
 			   }
 			   else if(lightCounter > 70){
-				   lightAmbient = new float[] { (80 - lightCounter) / 50.0f, (80 - lightCounter) / 50.0f, (80 - lightCounter) / 50.0f, 1 };
+				   lightAmbient = new float[] { (80 - lightCounter) / 200.0f, (80 - lightCounter) / 200.0f, (80 - lightCounter) / 200.0f, 1 };
 				   lightDiffuse = new float[] { (80 - lightCounter) / 10.0f, (80 - lightCounter) / 10.0f, (80 - lightCounter) / 10.0f, 1 };
 			   }
 			   else {
-			      lightAmbient = new float[] { lightCounter / 50.0f, lightCounter / 50.0f, lightCounter / 50.0f, 1 };
+			      lightAmbient = new float[] { lightCounter / 200.0f, lightCounter / 200.0f, lightCounter / 200.0f, 1 };
 			      lightDiffuse = new float[] { lightCounter / 10.0f, lightCounter / 10.0f, lightCounter / 10.0f, 1 };
 			   }
 			   

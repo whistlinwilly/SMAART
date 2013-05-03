@@ -45,6 +45,9 @@ public class MainActivity extends Activity {
 	public static final int MATERIALS = 20;
 	public static final int SUN = 21;
 	public static final int STOP = 22;
+	
+	
+	public static final int REINIT = 150;
 
 	public volatile GLView view;
 	public boolean mainGotMessage;
@@ -127,7 +130,7 @@ public class MainActivity extends Activity {
 	   r.pSingles = r.loadObject("program_single.obj");
 	   r.pSkylight = r.loadObject("program_skylight.obj");
 	   r.pTriples = r.loadObject("program_triple.obj");
-	   r.pAnimationShell = r.loadObject("aniSurface.obj");
+	   r.pAnimationShell = r.loadObject("aniDec5.obj");
 	   
 	   //load object animations
 	   r.aSiteZoom = r.loadAnimation("sitezoom2.dae");
@@ -144,19 +147,25 @@ public class MainActivity extends Activity {
 	   r.pTriplesTex = r.loadTexture("triple.bmp");
 	   r.blackTex	= r.loadTexture("black.bmp");
 	   r.whiteTex = r.loadTexture("white.bmp");
+	   r.greyTex = r.loadTexture("lightGrey.bmp");
 	   
 	   //load frames for animation
-	   r.pFrame1 = r.loadTexture("Make2D--visible--lines--water-waterPath_row1_00000.bmp");
-	   r.pFrame2 = r.loadTexture("Make2D--visible--lines--water-waterPath_row1_00001.bmp");
-	   r.pFrame3 = r.loadTexture("Make2D--visible--lines--water-waterPath_row1_00002.bmp");
-	   r.pFrame4 = r.loadTexture("Make2D--visible--lines--water-waterPath_row1_00003.bmp");
-	   r.pFrame5 = r.loadTexture("Make2D--visible--lines--water-waterPath_row1_00004.bmp");
-	   r.pFrame6 = r.loadTexture("Make2D--visible--lines--water-waterPath_row1_00005.bmp");
-	   r.pFrame7 = r.loadTexture("Make2D--visible--lines--water-waterPath_row1_00006.bmp");
-	   r.pFrame8 = r.loadTexture("Make2D--visible--lines--water-waterPath_row1_00007.bmp");
-	   r.pFrame9 = r.loadTexture("Make2D--visible--lines--water-waterPath_row1_00008.bmp");
-	   r.pFrame10 = r.loadTexture("Make2D--visible--lines--water-waterPath_row1_00009.bmp");
-	   r.pFrame11 = r.loadTexture("Make2D--visible--lines--water-waterPath_row1_00010.bmp");
+	   r.pFrame1 = r.loadTexture("waterDiagram_joinedAnimationFrames_00000.bmp");
+	   r.pFrame2 = r.loadTexture("waterDiagram_joinedAnimationFrames_00001.bmp");
+	   r.pFrame3 = r.loadTexture("waterDiagram_joinedAnimationFrames_00002.bmp");
+	   r.pFrame4 = r.loadTexture("waterDiagram_joinedAnimationFrames_00003.bmp");
+	   r.pFrame5 = r.loadTexture("waterDiagram_joinedAnimationFrames_00004.bmp");
+	   r.pFrame6 = r.loadTexture("waterDiagram_joinedAnimationFrames_00005.bmp");
+	   r.pFrame7 = r.loadTexture("waterDiagram_joinedAnimationFrames_00006.bmp");
+	   r.pFrame8 = r.loadTexture("waterDiagram_joinedAnimationFrames_00007.bmp");
+	   r.pFrame9 = r.loadTexture("waterDiagram_joinedAnimationFrames_00008.bmp");
+	   r.pFrame10 = r.loadTexture("waterDiagram_joinedAnimationFrames_00009.bmp");
+	   r.pFrame11 = r.loadTexture("waterDiagram_joinedAnimationFrames_00010.bmp");
+	   r.pFrame12 = r.loadTexture("waterDiagram_joinedAnimationFrames_00011.bmp");
+	   r.pFrame13 = r.loadTexture("waterDiagram_joinedAnimationFrames_00012.bmp");
+	   r.pFrame14 = r.loadTexture("waterDiagram_joinedAnimationFrames_00013.bmp");
+	   r.pFrame15 = r.loadTexture("waterDiagram_joinedAnimationFrames_00014.bmp");
+	   r.pFrame16 = r.loadTexture("waterDiagram_joinedAnimationFrames_00015.bmp");
 	   
 	   if(r.pAnimationShell >= 0){
 		   r.setObjectTexture(r.pAnimationShell, r.pFrame1);
