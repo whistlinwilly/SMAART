@@ -43,6 +43,14 @@ public class GLRenderer implements GLSurfaceView.Renderer {
    boolean stoopidBoolean = false;
    boolean sillyCodyBoolean = false;
    
+   float[] lightPathX = {26.452854f,26.532384f,26.550999f,26.509127f,26.407747f,26.248329f,26.032768f,25.763292f,25.442382f,25.072684f,24.656931f,24.197887f,23.698285f,23.160792f,22.587976f,21.982289f,21.346051f,20.681447f,19.990527f,19.275202f,18.537257f,17.778351f,17.000028f,16.203725f,15.39078f,14.562437f,13.71986f,12.864135f,11.996281f,11.117256f,10.22796f,9.329247f,8.421926f,7.506769f,6.584513f,5.655867f,4.721516f,3.782125f,2.838341f,1.890803f,0.940137f,-0.013033f,-0.968086f,-1.924394f,-2.881327f,-3.838243f,-4.794485f,-5.749377f,-6.702219f,-7.652287f,-8.598818f,-9.541015f,-10.478035f,-11.408984f,-12.332911f,-13.248798f,-14.155556f,-15.052015f,-15.936911f,-16.808881f,-17.666452f,-18.508026f,-19.331877f,-20.136135f,-20.918779f,-21.677628f,-22.41034f,-23.114407f,-23.787161f,-24.425788f,-25.027347f,-25.5888f,-26.107064f,-26.579061f,-27.001791f,-27.372422f,-27.688372f,-27.947403f,-28.147712f,-28.288001f};	   
+   
+   float[] lightPathY = {5.746264f,5.057488f,4.361776f,3.661976f,2.960881f,2.261167f,1.565337f,0.875679f,0.194244f,-0.477162f,-1.136985f,-1.783903f,-2.416815f,-3.03482f,-3.63719f,-4.223351f,-4.792858f,-5.345379f,-5.880669f,-6.39856f,-6.898942f,-7.381753f,-7.846971f,-8.294596f,-8.724652f,-9.137178f,-9.532218f,-9.909822f,-10.270041f,-10.612924f,-10.938514f,-11.246846f,-11.537949f,-11.811838f,-12.068521f,-12.307988f,-12.530221f,-12.735183f,-12.922823f,-13.093077f,-13.245859f,-13.381071f,-13.498594f,-13.598293f,-13.680011f,-13.743573f,-13.788787f,-13.815435f,-13.823281f,-13.812068f,-13.781517f,-13.731325f,-13.661168f,-13.570702f,-13.459559f,-13.327351f,-13.17367f,-12.998091f,-12.800171f,-12.579459f,-12.335494f,-12.067815f,-11.775965f,-11.459507f,-11.118029f,-10.751165f,-10.358608f,-9.940135f,-9.495634f,-9.025124f,-8.528794f,-8.007034f,-7.460464f,-6.889969f,-6.29672f,-5.68219f,-5.048165f,-4.396724f,-3.730211f,-3.0512f};
+   
+   float[] lightPathZ = {1.370194f,2.038106f,2.703301f,3.363135f,4.015095f,4.656861f,5.286339f,5.901692f,6.501346f,7.083988f,7.648556f,8.194213f,8.720332f,9.22646f,9.712299f,10.177676f,10.622525f,11.046861f,11.450767f,11.834373f,12.197849f,12.541391f,12.865211f,13.169532f,13.45458f,13.720582f,13.967759f,14.196326f,14.406485f,14.59843f,14.772339f,14.928378f,15.066696f,15.187428f,15.290692f,15.376589f,15.445205f,15.496607f,15.530846f,15.547957f,15.547957f,15.530846f,15.496607f,15.445205f,15.376589f,15.290692f,15.187428f,15.066696f,14.928378f,14.772339f,14.59843f,14.406485f,14.196326f,13.967759f,13.720582f,13.45458f,13.169532f,12.865211f,12.541391f,12.197849f,11.834373f,11.450766f,11.046861f,10.622525f,10.177676f,9.712299f,9.22646f,8.720332f,8.194214f,7.648555f,7.083988f,6.501346f,5.901692f,5.286338f,4.656861f,4.015095f,3.363135f,2.703302f,2.038106f,1.370194f};
+   
+   
+   
    
    //objects
    public int pCirculation;
@@ -204,7 +212,7 @@ private int globalColor;
 	private float globalScaleX = 1.0f;
 	private float globalScaleY = 1.0f;
 	private int scaleCounter = 0;
-   
+	private int lightCounter = 0;
 
    GLRenderer(Context context) {
       this.context = context;
@@ -458,6 +466,42 @@ private int globalColor;
 	   }
 	   else{
 		   
+		   if(mainActivity.stage == MainActivity.MATERIALS){
+			    // Define the lighting
+			   float lightAmbient[];
+			   float lightDiffuse[];
+			   float lightPos[];
+			   
+			   
+			   if(lightCounter > 10){
+			   		  lightAmbient = new float[]{0.2f, 0.2f, 0.2f, 1 };
+				      lightDiffuse = new float[] { 1.0f, 1.0f, 1.0f, 1 };
+			   }
+			   else if(lightCounter > 70){
+				   lightAmbient = new float[] { (80 - lightCounter) / 50.0f, (80 - lightCounter) / 50.0f, (80 - lightCounter) / 50.0f, 1 };
+				   lightDiffuse = new float[] { (80 - lightCounter) / 10.0f, (80 - lightCounter) / 10.0f, (80 - lightCounter) / 10.0f, 1 };
+			   }
+			   else {
+			      lightAmbient = new float[] { lightCounter / 50.0f, lightCounter / 50.0f, lightCounter / 50.0f, 1 };
+			      lightDiffuse = new float[] { lightCounter / 10.0f, lightCounter / 10.0f, lightCounter / 10.0f, 1 };
+			   }
+			   
+			   
+			   
+			      lightPos = new float[] { lightPathX[lightCounter], lightPathY[lightCounter], lightPathZ[lightCounter], 1 };
+			      
+			
+			      gl.glEnable(GL10.GL_LIGHTING);
+			      gl.glEnable(GL10.GL_LIGHT0);
+			      gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_AMBIENT, lightAmbient, 0);
+			      gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_DIFFUSE, lightDiffuse, 0);
+			      gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_POSITION, lightPos, 0);
+			   
+			   if(lightCounter < 79)
+				   lightCounter++;
+		   }
+		   else{
+		   
 		    // Define the lighting
 		      float lightAmbient[] = new float[] { 1.0f, 1.0f, 1.0f, 1 };
 		      float lightDiffuse[] = new float[] { lightBrightness, lightBrightness, lightBrightness, 1 };
@@ -467,7 +511,8 @@ private int globalColor;
 		      gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_AMBIENT, lightAmbient, 0);
 		      gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_DIFFUSE, lightDiffuse, 0);
 		      gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_POSITION, lightPos, 0);
-		   
+		   }
+		      
 			   if(mainActivity.stage == MainActivity.SITEMAPZOOM){
 				   if(scaleCounter  < 60){
 					   globalScaleX += 0.05f;

@@ -208,6 +208,25 @@ public class NetClient extends AsyncTask<MainActivity, MainActivity, MainActivit
     	else if(command == MainActivity.NONE){
     		glr.hide(glr.siteBase);
     	}
+    	else if(command == MainActivity.MATERIALS){
+    		glr.hide(glr.pAnimationShell);
+    		glr.show(glr.pCirculation);
+    		glr.show(glr.pContours);
+    		glr.show(glr.pDoubles);
+    		glr.show(glr.pHeadHouse);
+    		glr.show(glr.pHousekeeping);
+    		glr.show(glr.pSingles);
+    		glr.show(glr.pSkylight);
+    		glr.show(glr.pTriples);
+		   glr.setObjectTexture(glr.pContours, glr.pContoursTex);
+ 		   glr.setObjectTexture(glr.pDoubles, glr.pDoublesTex);
+ 		   glr.setObjectTexture(glr.pHeadHouse, glr.pHeadHouseTex);
+ 		   glr.setObjectTexture(glr.pHousekeeping, glr.pHousekeepingTex);
+ 		   glr.setObjectTexture(glr.pSingles, glr.pSinglesTex);
+ 		   glr.setObjectTexture(glr.pSkylight, glr.pSkylightTex);
+ 		   glr.setObjectTexture(glr.pTriples, glr.pTriplesTex);
+ 		  glr.setObjectTexture(glr.pCirculation, glr.pCirculationTex);
+    	}
     		
     		
     		

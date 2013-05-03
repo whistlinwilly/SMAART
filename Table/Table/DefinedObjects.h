@@ -12,7 +12,7 @@
 #define TABLE_X (480)
 #define TABLE_Y (480)
 
-#define DEFAULT_DISTANCE (14.5)
+#define DEFAULT_DISTANCE (14.6)
 
 //Error in pixels that corner of table can be off image plane
 #define X_INTERSECT_ERROR_MARGIN (200)
