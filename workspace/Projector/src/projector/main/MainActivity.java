@@ -43,9 +43,9 @@ public class MainActivity extends Activity {
       
       //initialize things
       stage = -1;
-      netClient = new NetClient("10.0.1.2", 6881);
+      netClient = new NetClient("192.168.1.5", 6881);
       view = new GLView(this);
-      view.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
+    //  view.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
 	  view.setKeepScreenOn(true);
       setContentView(view);
       view.renderer.mainActivity = this;
@@ -92,56 +92,66 @@ public class MainActivity extends Activity {
    
    public void init(){
 	   
-	 int aniNum = view.renderer.loadAnimation("test2.dae");
-	 int birdAni = view.renderer.loadAnimation("birdAni.dae");
-	 int house = view.renderer.loadObject("stuccohouse.obj");
-	 int grass = view.renderer.loadObject("complexgrass.obj");
-	 int bird0 = view.renderer.loadObject("bird.obj");
-	 int bird1 = view.renderer.loadObject("bird.obj");
-	 int bird2 = view.renderer.loadObject("bird.obj");
-	//int siteObj = view.renderer.loadObject("SportsCube.obj");
-	// int blackTex = view.renderer.loadTexture("black.bmp");
-	 int whiteTex = view.renderer.loadTexture("white.bmp");
-     int houseTex = view.renderer.loadTexture("stuccosprite.bmp");
-     int grassTex = view.renderer.loadTexture("grass.bmp");
-     int rainGrassTex = view.renderer.loadTexture("raingrass.bmp");
-     int rainGrass1Tex = view.renderer.loadTexture("raingrass2.bmp");
-     int rainGrass2Tex = view.renderer.loadTexture("raingrass3.bmp");
-     int birdTex = view.renderer.loadTexture("bird.bmp");
-     
-//     int siteTex2 = view.renderer.loadTexture("Site2.bmp");
-//     int siteTex3 = view.renderer.loadTexture("Site3.bmp");
-     if(house >= 0){
-    	 view.renderer.setObjectTexture(house, houseTex);
-   	  	 view.renderer.show(house);
-     }
-     if(grass >= 0){
-    	 view.renderer.setObjectTexture(grass, grassTex);
-    	 view.renderer.show(grass);
-     }
-     if(bird0 >=0){
-    	 projector.rendering.Object oBird = view.renderer.objects.get(bird0);
-    	 oBird.x = -5.0f;
-    	 oBird.y = -2.0f;
-    	 oBird.z = 0.1f;
-    	 oBird.theta = 60.0f;
-    	 view.renderer.setObjectTexture(bird0, birdTex);
-     }
-     if(bird1 >=0){
-    	 projector.rendering.Object oBird = view.renderer.objects.get(bird1);
-    	 oBird.x = 0.0f;
-    	 oBird.y = -6.5f;
-    	 oBird.z = 0.1f;
-    	 view.renderer.setObjectTexture(bird1, birdTex);
-     }
-     if(bird2 >=0){
-    	 projector.rendering.Object oBird = view.renderer.objects.get(bird2);
-    	 oBird.x = 5.0f;
-    	 oBird.y = -3.0f;
-    	 oBird.z = 0.1f;
-    	 oBird.theta = 90.0f;
-    	 view.renderer.setObjectTexture(bird2, birdTex);
-     }
+//old init methods	   
+	   
+	 int model = view.renderer.loadObject("model.obj");
+	 int tex = view.renderer.loadTexture("white.bmp");
+	 
+	 view.renderer.setObjectTexture(model, tex);
+	 view.renderer.show(model);
+	 view.renderer.lightStage = 1;
+	 this.stage = MainActivity.RUN;
+	 
+//	 int aniNum = view.renderer.loadAnimation("test2.dae");
+//	 int birdAni = view.renderer.loadAnimation("birdAni.dae");
+//	 int house = view.renderer.loadObject("stuccohouse.obj");
+//	 int grass = view.renderer.loadObject("complexgrass.obj");
+//	 int bird0 = view.renderer.loadObject("bird.obj");
+//	 int bird1 = view.renderer.loadObject("bird.obj");
+//	 int bird2 = view.renderer.loadObject("bird.obj");
+//	//int siteObj = view.renderer.loadObject("SportsCube.obj");
+//	// int blackTex = view.renderer.loadTexture("black.bmp");
+//	 int whiteTex = view.renderer.loadTexture("white.bmp");
+//     int houseTex = view.renderer.loadTexture("stuccosprite.bmp");
+//     int grassTex = view.renderer.loadTexture("grass.bmp");
+//     int rainGrassTex = view.renderer.loadTexture("raingrass.bmp");
+//     int rainGrass1Tex = view.renderer.loadTexture("raingrass2.bmp");
+//     int rainGrass2Tex = view.renderer.loadTexture("raingrass3.bmp");
+//     int birdTex = view.renderer.loadTexture("bird.bmp");
+//     
+////     int siteTex2 = view.renderer.loadTexture("Site2.bmp");
+////     int siteTex3 = view.renderer.loadTexture("Site3.bmp");
+//     if(house >= 0){
+//    	 view.renderer.setObjectTexture(house, houseTex);
+//   	  	 view.renderer.show(house);
+//     }
+//     if(grass >= 0){
+//    	 view.renderer.setObjectTexture(grass, grassTex);
+//    	 view.renderer.show(grass);
+//     }
+//     if(bird0 >=0){
+//    	 projector.rendering.Object oBird = view.renderer.objects.get(bird0);
+//    	 oBird.x = -5.0f;
+//    	 oBird.y = -2.0f;
+//    	 oBird.z = 0.1f;
+//    	 oBird.theta = 60.0f;
+//    	 view.renderer.setObjectTexture(bird0, birdTex);
+//     }
+//     if(bird1 >=0){
+//    	 projector.rendering.Object oBird = view.renderer.objects.get(bird1);
+//    	 oBird.x = 0.0f;
+//    	 oBird.y = -6.5f;
+//    	 oBird.z = 0.1f;
+//    	 view.renderer.setObjectTexture(bird1, birdTex);
+//     }
+//     if(bird2 >=0){
+//    	 projector.rendering.Object oBird = view.renderer.objects.get(bird2);
+//    	 oBird.x = 5.0f;
+//    	 oBird.y = -3.0f;
+//    	 oBird.z = 0.1f;
+//    	 oBird.theta = 90.0f;
+//    	 view.renderer.setObjectTexture(bird2, birdTex);
+//     }
    }
 
 public void playSound(String fileName){

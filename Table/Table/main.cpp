@@ -5,7 +5,7 @@
 int main(int argc, char* argv[])
 {
 	//construct a table with (ip, port, cameraNumber);
-	Table* table = new Table("10.0.1.3", 6881, 0);
+	Table* table = new Table("192.168.1.5", 6881, 0);
 
 	//run the initialization
 	table->initialize();

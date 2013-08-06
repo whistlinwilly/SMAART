@@ -100,7 +100,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
    private float height = 0.0f;
    public float eyeX = 0.0f;
    public float eyeY = 0.0f;
-   public float eyeZ = 24.0f;
+   public float eyeZ = 36.0f;
    public float centerX = 0.0f;
    public float centerY = 0.0f;
    public float centerZ = 0.0f;
@@ -109,10 +109,10 @@ public class GLRenderer implements GLSurfaceView.Renderer {
    public float upZ  = 0.0f;
    public NetClient netClient;
    
-   public float lightX = 0.0f;
-   public float lightY = 0.0f;
-   public float lightZ = -20.0f;
-   public float lightBrightness = 0.0f;
+   public float lightX = 5.0f;
+   public float lightY = 5.0f;
+   public float lightZ = 20.0f;
+   public float lightBrightness = 1.0f;
    public float lightTheta = 0.0f;
    public volatile int lightStage = -1;
    
@@ -125,7 +125,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 	
    private int numTextures = 0;
 	
-   ObjectFactory factory = new ObjectFactory("/Objects");
+   FastObjectFactory factory = new FastObjectFactory("/Objects");
    AnimationFactory ani = new AnimationFactory("/Animations");
 	
    /** The texture pointer */

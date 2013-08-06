@@ -24,47 +24,47 @@ ServerNetwork::ServerNetwork(char* ip, int port)
     // Initialize Winsock
     iResult = WSAStartup(MAKEWORD(2,2), &wsaData);
     if (iResult != 0) {
-       // printf("WSAStartup failed with error: %d\n", iResult);
+        printf("WSAStartup failed with error: %d\n", iResult);
         exit(1);
     }
 
     // Create a SOCKET for connecting to server
     ListenSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (ListenSocket == INVALID_SOCKET) {
-      //  printf("socket failed with error: %ld\n", WSAGetLastError());
+        printf("socket failed with error: %ld\n", WSAGetLastError());
         WSACleanup();
-        exit(1);
+     //   exit(1);
     }
 
 	// Get IP Address of website by the domain name, we do this by contacting(??) the Domain Name Server
     if ((hostent = gethostbyname(ip)) == NULL)  // "localhost"  www.google.com
     {
-      //  printf("Failed to resolve website name to an ip address\n");
+        printf("Failed to resolve website name to an ip address\n");
         WSACleanup();
-        exit(1);
+     //   exit(1);
     }
-	//printf("HostName: %s\n", hostent->h_name);
+	printf("HostName: %s\n", hostent->h_name);
     sockAddr.sin_port             = htons(SERVER_PORT);
     sockAddr.sin_family           = AF_INET;
     sockAddr.sin_addr.S_un.S_addr = (*reinterpret_cast <IPNumber*> (hostent->h_addr_list[0]));
 
     if (iResult == SOCKET_ERROR) {
-      //  printf("ioctlsocket failed with error: %d\n", WSAGetLastError());
+        printf("ioctlsocket failed with error: %d\n", WSAGetLastError());
         closesocket(ListenSocket);
         WSACleanup();
-        exit(1);
+    //    exit(1);
     }
 
     // Setup the TCP listening socket
     iResult = bind( ListenSocket, (SOCKADDR*)(&sockAddr), sizeof(sockAddr));
-	//printf("Listening Socket Bound to: addr: %s, port: %d\n", hostent->h_name, ntohs(sockAddr.sin_port));
+	printf("Listening Socket Bound to: addr: %s, port: %d\n", hostent->h_name, ntohs(sockAddr.sin_port));
 	
     
 	if (iResult == SOCKET_ERROR) {
-      //  printf("bind failed with error: %d\n", WSAGetLastError());
+        printf("bind failed with error: %d\n", WSAGetLastError());
         closesocket(ListenSocket);
         WSACleanup();
-      //  exit(1);
+     //   exit(1);
     }
 
 
@@ -72,7 +72,7 @@ ServerNetwork::ServerNetwork(char* ip, int port)
     iResult = listen(ListenSocket, SOMAXCONN);
 
     if (iResult == SOCKET_ERROR) {
-      //  printf("listen failed with error: %d\n", WSAGetLastError());
+        printf("listen failed with error: %d\n", WSAGetLastError());
         closesocket(ListenSocket);
         WSACleanup();
       //  exit(1);
