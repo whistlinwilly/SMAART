@@ -201,7 +201,7 @@ public class FastObjectFactory {
 							
 							newSurface = new Surface(avgX, avgY, avgZ);
 							
-					/*		ByteBuffer bb = ByteBuffer.allocateDirect(3 * 3 * 4); //3 points * 3 floats each * sizeof(float)
+							ByteBuffer bb = ByteBuffer.allocateDirect(3 * 3 * 4); //3 points * 3 floats each * sizeof(float)
 							bb.order(ByteOrder.nativeOrder());
 							newSurface.vertices = bb.asFloatBuffer();
 							
@@ -218,12 +218,12 @@ public class FastObjectFactory {
 							newSurface.vertices.put(z3);
 							newSurface.vertices.position(0);
 							
-							*/
 							
-				/*			ByteBuffer tbb = ByteBuffer.allocateDirect(2 * 3 * 4);
+							
+							ByteBuffer tbb = ByteBuffer.allocateDirect(2 * 3 * 4);
 							tbb.order(ByteOrder.nativeOrder());
 							newSurface.textures = tbb.asFloatBuffer();
-					*/		
+							
 							textureIndex1--;
 							textureIndex2--;
 							textureIndex3--;
@@ -236,19 +236,19 @@ public class FastObjectFactory {
 							Float test6 = textures.get(2 * textureIndex3 + 1);
 							Float poop = test1 + test2 + test3 + test4 + test5 + test6;
 							
-				/*			newSurface.textures.put(textures.get(2 * textureIndex1));
+							newSurface.textures.put(textures.get(2 * textureIndex1));
 							newSurface.textures.put(textures.get(2 * textureIndex1 + 1));
 							newSurface.textures.put(textures.get(2 * textureIndex2));
 							newSurface.textures.put(textures.get(2 * textureIndex2 + 1));
 							newSurface.textures.put(textures.get(2 * textureIndex3));
 							newSurface.textures.put(textures.get(2 * textureIndex3 + 1));
 							newSurface.textures.position(0);
-							*/
 							
-					/*		ByteBuffer nbb = ByteBuffer.allocateDirect(3 * 3 * 4);
+							
+							ByteBuffer nbb = ByteBuffer.allocateDirect(3 * 3 * 4);
 							nbb.order(ByteOrder.nativeOrder());
 							newSurface.normals = nbb.asFloatBuffer();
-						*/	
+							
 							normalIndex1--;
 							normalIndex2--;
 							normalIndex3--;
@@ -274,7 +274,7 @@ public class FastObjectFactory {
 							avgZ /= normalize;
 							
 							newSurface.setNormals(avgX, avgY, avgZ);
-				/*			
+							
 							newSurface.normals.put(x1);
 							newSurface.normals.put(y1);
 							newSurface.normals.put(z1);
@@ -289,7 +289,7 @@ public class FastObjectFactory {
 							newSurface.index = ByteBuffer.allocateDirect(indexArray.length);
 							newSurface.index.put(indexArray);
 							newSurface.index.position(0);
-						*/
+						
 						newSurfaces.add(newSurface);
 //						vertexIndex1 = 0;
 //						vertexIndex2 = 0;

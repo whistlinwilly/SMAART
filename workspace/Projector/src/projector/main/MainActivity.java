@@ -93,9 +93,11 @@ public class MainActivity extends Activity {
    public void init(){
 	   
 //old init methods	   
+	 
+	   int tex = view.renderer.loadTexture("airplane.bmp");
 	   
-	 int model = view.renderer.loadObject("model.obj");
-	 int tex = view.renderer.loadTexture("white.bmp");
+	 int model = view.renderer.loadObject("box.obj");
+	 
 	 
 	 view.renderer.setObjectTexture(model, tex);
 	 view.renderer.show(model);

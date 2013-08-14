@@ -39,6 +39,7 @@ void Table::initialize(){
 
 	sn->sendToAll("3,",2,0);
 	sn->receiveData(0, recvbuf);
+/*
 	sn->sendToAll("3,",2,1);
 	sn->receiveData(1,recvbuf);
 
@@ -165,7 +166,7 @@ void Table::initialize(){
 }
 
 void Table::run(){
-	//ColorChanging* cc = new ColorChanging(tCam, cp, sn);
+	ColorChanging* cc = new ColorChanging(tCam, cp, sn);
 }
 
 

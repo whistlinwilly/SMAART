@@ -393,7 +393,7 @@ private int globalColor;
 		   
 		   for(int i = 0; i < colorValues.length; i++)
 				if(colorValues[i] > 0)
-					colorValues[i] -= 110;
+					colorValues[i] -= 40;
 				else 
 					colorValues[i] = 0;
 		   
@@ -551,7 +551,7 @@ private int globalColor;
    
    private float[] getColorModel(int i) {
 	   float[] values = new float[3];
-	   float frequency = 0.008f;
+	   float frequency = 0.01f;
 	   float red   = (((float)Math.sin(frequency*colorValues[i] + 0) * 1.0f) * 127.0f + 128.0f) / 255.0f;
 	   float green = (((float)Math.sin(frequency*colorValues[i] + 2) * 1.0f) * 127.0f + 128.0f) / 255.0f;
 	   float blue  = (((float)Math.sin(frequency*colorValues[i] + 4) * 1.0f) * 127.0f + 128.0f) / 255.0f;

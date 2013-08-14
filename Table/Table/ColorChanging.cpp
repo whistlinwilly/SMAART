@@ -36,7 +36,7 @@ void ColorChanging::run(){
 		curSquare = 0;
 		//set background subtractor
 		appFrame = appCam.grabFrameWithPerspective(appCp);
-		appBGsub->operator()(appFrame, appForeground, 0.001);
+		appBGsub->operator()(appFrame, appForeground, 0.00001);
 		Mat test = Mat(appForeground);
 		namedWindow("Test", CV_WINDOW_AUTOSIZE);
 		imshow("Test", appForeground);

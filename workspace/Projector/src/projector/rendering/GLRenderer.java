@@ -98,9 +98,9 @@ public class GLRenderer implements GLSurfaceView.Renderer {
    
    private float width = 0.0f;
    private float height = 0.0f;
-   public float eyeX = 0.0f;
-   public float eyeY = 0.0f;
-   public float eyeZ = 36.0f;
+   public float eyeX = -5.0f;
+   public float eyeY = -5.0f;
+   public float eyeZ = 15.0f;
    public float centerX = 0.0f;
    public float centerY = 0.0f;
    public float centerZ = 0.0f;

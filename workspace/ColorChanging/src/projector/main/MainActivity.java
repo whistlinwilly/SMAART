@@ -42,7 +42,7 @@ public class MainActivity extends Activity {
       
       //initialize things
       stage = -1;
-      netClient = new NetClient("10.0.1.2", 6881);
+      netClient = new NetClient("192.168.1.4", 6881);
       view = new GLView(this);
       view.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
 	  view.setKeepScreenOn(true);

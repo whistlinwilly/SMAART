@@ -31,6 +31,7 @@ public class SingleAllocationFastObjectFactory {
 	List<Float> vertices, textures, normals;
 	List<Surface> newSurfaces;
 	List<Object> allObjects;
+	List<Short> indices;
 
 	boolean readingVertices = false;
 	boolean readingTextures = false;
@@ -54,11 +55,11 @@ public class SingleAllocationFastObjectFactory {
 	
 	private long timeElapsed;
 	private long sinceLast = 0;
-	private long numVertices = 0;
-	private long numTexCoords = 0;
-	private long numNormals = 0;
+	private int numVertices = 0;
+	private int numTexCoords = 0;
+	private int numNormals = 0;
+	public int numIndices = 0;
 	
-	//TODO ALL THE SHIT!!!!!
 	
 	public SingleAllocationFastObjectFactory(String defaultDir) {
 		
@@ -68,6 +69,7 @@ public class SingleAllocationFastObjectFactory {
 		vertices = new ArrayList<Float>();
 		textures = new ArrayList<Float>();
 		normals = new ArrayList<Float>();
+		indices = new ArrayList<Short>();
 		newSurfaces = new ArrayList<Surface>();
 		allObjects = new ArrayList<Object>();
 		indexArray[0] = (byte) 0;
@@ -115,10 +117,15 @@ public class SingleAllocationFastObjectFactory {
 								//Log.w("Object Factory", "Found Vertex Section, Now Parsing");
 							}
 
+							numVertices++;
 							
-							vertices.add(Float.parseFloat(parts.nextToken()));
-							vertices.add(Float.parseFloat(parts.nextToken()));
-							vertices.add(Float.parseFloat(parts.nextToken()));
+							float x = Float.parseFloat(parts.nextToken());
+							float y = Float.parseFloat(parts.nextToken());
+							float z = Float.parseFloat(parts.nextToken());
+							
+							vertices.add(x);
+							vertices.add(z);
+							vertices.add(y);
 							
 						//	Log.w("Object Factory", "Added new vertex (" + x + "," + y + "," + z + ")");
 						}
@@ -132,6 +139,7 @@ public class SingleAllocationFastObjectFactory {
 								hasTextures = true;
 							}
 							
+							numTexCoords++;
 							textures.add(Float.parseFloat(parts.nextToken()));
 							textures.add(1.0f - Float.parseFloat(parts.nextToken()));
 							
@@ -149,6 +157,7 @@ public class SingleAllocationFastObjectFactory {
 								hasNormals = true;
 							}
 							
+							numNormals++;
 							normals.add(Float.parseFloat(parts.nextToken()));
 							normals.add(Float.parseFloat(parts.nextToken()));
 							normals.add(Float.parseFloat(parts.nextToken()));
@@ -164,26 +173,28 @@ public class SingleAllocationFastObjectFactory {
 								sinceLast = System.currentTimeMillis();
 							//	Log.w("Object Factory", "Found Face Section, Now Parsing");
 								readingFaces = true;
+								ByteBuffer bb = ByteBuffer.allocateDirect(numVertices * 3 * 4); //3 points * 3 floats each * sizeof(float)
+								bb.order(ByteOrder.nativeOrder());
+								newObj.vertices = bb.asFloatBuffer();
+								
+								for(int i = 0; i < numVertices; i++)
+									newObj.vertices.put(vertices.get(i));
+								
+								newObj.vertices.position(0);
 							}
 							
 
 							String face = parts.nextToken();
 							String numbers[] = face.split("/");
 							vertexIndex1 = Integer.parseInt(numbers[0]);
-							textureIndex1 = Integer.parseInt(numbers[1]);
-							normalIndex1 = Integer.parseInt(numbers[2]);
 							
 							face = parts.nextToken();
 							numbers = face.split("/");
 							vertexIndex2 = Integer.parseInt(numbers[0]);
-							textureIndex2 = Integer.parseInt(numbers[1]);
-							normalIndex2 = Integer.parseInt(numbers[2]);
 							
 							face = parts.nextToken();
 							numbers = face.split("/");
 							vertexIndex3 = Integer.parseInt(numbers[0]);
-							textureIndex3 = Integer.parseInt(numbers[1]);
-							normalIndex3 = Integer.parseInt(numbers[2]);
 							
 							//Log.w("Object Factory", "Found New Tri Face " + vertexIndex1 + "/" + vertexIndex2 + "/" + vertexIndex3);
 							
@@ -191,121 +202,18 @@ public class SingleAllocationFastObjectFactory {
 							vertexIndex2--;
 							vertexIndex3--;
 							
-							float x1 = vertices.get(3 * vertexIndex1);
-							float y1 = vertices.get(3 * vertexIndex1 + 1);
-							float z1 = vertices.get(3 * vertexIndex1 + 2);
-							float x2 = vertices.get(3 * vertexIndex2);
-							float y2 = vertices.get(3 * vertexIndex2 + 1);
-							float z2 = vertices.get(3 * vertexIndex2 + 2);
-							float x3 = vertices.get(3 * vertexIndex3);
-							float y3 = vertices.get(3 * vertexIndex3 + 1);
-							float z3 = vertices.get(3 * vertexIndex3 + 2);
 							
-							float avgX = (x1 + x2 + x3) / 3.0f;
-							float avgY = (y1 + y2 + y3) / 3.0f;
-							float avgZ = (z1 + z2 + z3) / 3.0f;
+							newSurface = new Surface(0.0f, 0.0f, 0.0f);
 							
-							newSurface = new Surface(avgX, avgY, avgZ);
+							indices.add((short) vertexIndex1);
+							indices.add((short) vertexIndex2);
+							indices.add((short) vertexIndex3);		
 							
-					/*		ByteBuffer bb = ByteBuffer.allocateDirect(3 * 3 * 4); //3 points * 3 floats each * sizeof(float)
-							bb.order(ByteOrder.nativeOrder());
-							newSurface.vertices = bb.asFloatBuffer();
-							
-
-							
-							newSurface.vertices.put(x1);
-							newSurface.vertices.put(y1);
-							newSurface.vertices.put(z1);
-							newSurface.vertices.put(x2);
-							newSurface.vertices.put(y2);
-							newSurface.vertices.put(z2);
-							newSurface.vertices.put(x3);
-							newSurface.vertices.put(y3);
-							newSurface.vertices.put(z3);
-							newSurface.vertices.position(0);
-							
-							*/
-							
-				/*			ByteBuffer tbb = ByteBuffer.allocateDirect(2 * 3 * 4);
-							tbb.order(ByteOrder.nativeOrder());
-							newSurface.textures = tbb.asFloatBuffer();
-					*/		
-							textureIndex1--;
-							textureIndex2--;
-							textureIndex3--;
-							
-							Float test1 = textures.get(2 * textureIndex1);
-							Float test2 = textures.get(2 * textureIndex1 + 1);
-							Float test3 = textures.get(2 * textureIndex2);
-							Float test4 = textures.get(2 * textureIndex2 + 1);
-							Float test5 = textures.get(2 * textureIndex3);
-							Float test6 = textures.get(2 * textureIndex3 + 1);
-							Float poop = test1 + test2 + test3 + test4 + test5 + test6;
-							
-				/*			newSurface.textures.put(textures.get(2 * textureIndex1));
-							newSurface.textures.put(textures.get(2 * textureIndex1 + 1));
-							newSurface.textures.put(textures.get(2 * textureIndex2));
-							newSurface.textures.put(textures.get(2 * textureIndex2 + 1));
-							newSurface.textures.put(textures.get(2 * textureIndex3));
-							newSurface.textures.put(textures.get(2 * textureIndex3 + 1));
-							newSurface.textures.position(0);
-							*/
-							
-					/*		ByteBuffer nbb = ByteBuffer.allocateDirect(3 * 3 * 4);
-							nbb.order(ByteOrder.nativeOrder());
-							newSurface.normals = nbb.asFloatBuffer();
-						*/	
-							normalIndex1--;
-							normalIndex2--;
-							normalIndex3--;
-							
-							x1 = normals.get(3 * normalIndex1);
-							y1 = normals.get(3 * normalIndex1 + 1);
-							z1 = normals.get(3 * normalIndex1 + 2);
-							x2 = normals.get(3 * normalIndex2);
-							y2 = normals.get(3 * normalIndex2 + 1);
-							z2 = normals.get(3 * normalIndex2 + 2);
-							x3 = normals.get(3 * normalIndex3);
-							y3 = normals.get(3 * normalIndex3 + 1);
-							z3 = normals.get(3 * normalIndex3 + 2);
-							
-							avgX = (x1 + x2 + x3) / 3.0f;
-							avgY = (y1 + y2 + y3) / 3.0f;
-							avgZ = (z1 + z2 + z3) / 3.0f;
-							
-							float normalize = (float) Math.sqrt(Math.pow(avgX,2) + Math.pow(avgY, 2) + Math.pow(avgZ, 2));
-							
-							avgX /= normalize;
-							avgY /= normalize;
-							avgZ /= normalize;
-							
-							newSurface.setNormals(avgX, avgY, avgZ);
-				/*			
-							newSurface.normals.put(x1);
-							newSurface.normals.put(y1);
-							newSurface.normals.put(z1);
-							newSurface.normals.put(x2);
-							newSurface.normals.put(y2);
-							newSurface.normals.put(z2);
-							newSurface.normals.put(x3);
-							newSurface.normals.put(y3);
-							newSurface.normals.put(z3);
-							newSurface.normals.position(0);
-
-							newSurface.index = ByteBuffer.allocateDirect(indexArray.length);
-							newSurface.index.put(indexArray);
-							newSurface.index.position(0);
-						*/
+							numIndices +=3;
+			
+						
 						newSurfaces.add(newSurface);
-//						vertexIndex1 = 0;
-//						vertexIndex2 = 0;
-//						vertexIndex3 = 0;
-//						textureIndex1 = 0;
-//						textureIndex2 = 0;
-//						textureIndex3 = 0;
-//						normalIndex1 = 0;
-//						normalIndex2 = 0;
-//						normalIndex3 = 0;
+
 						
 						}
 						else if(type.equals("o")){
@@ -431,7 +339,24 @@ public class SingleAllocationFastObjectFactory {
 
 				sinceLast = System.currentTimeMillis() - sinceLast;
 				Log.w("OBJECT FACTORY","Time to parse faces: " + sinceLast);
-				Log.w("OBJECT FACTORY", "Model Loading Time: " + (System.currentTimeMillis() - timeElapsed));
+				
+				
+				//COMMENTED OUT BECAUSE OF ERRORS
+//				ByteBuffer dlb = ByteBuffer.allocateDirect(
+//				        // (# of coordinate values * 2 bytes per short)
+//				                numIndices * 2);
+//				        dlb.order(ByteOrder.nativeOrder());
+//				        newObj.indexBuffer = dlb.asShortBuffer();
+//				        
+//				        for(int x = 0; x < numIndices; x++)
+//				        	newObj.indexBuffer.put(indices.get(x));
+//				        
+//				        newObj.indexBuffer.position(0);
+//				
+//				
+//				Log.w("OBJECT FACTORY", "Model Loading Time: " + (System.currentTimeMillis() - timeElapsed));
+//				
+//				newObj.numIndices = numIndices;
 				
 				return newObj;
 						
